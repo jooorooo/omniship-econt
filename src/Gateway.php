@@ -6,16 +6,16 @@
  * Time: 17:18 ч.
  */
 
-namespace Omniship\Speedy;
+namespace Omniship\Econt;
 
-use Omniship\Speedy\Http\ShippingServicesRequest;
-use Omniship\Speedy\Http\TrackingParcelRequest;
+use Omniship\Econt\Http\ShippingServicesRequest;
+use Omniship\Econt\Http\TrackingParcelRequest;
 use Omniship\Common\AbstractGateway;
 
 class Gateway extends AbstractGateway
 {
 
-    private $name = 'Speedy';
+    private $name = 'Econt';
 
     /**
      * @return string
