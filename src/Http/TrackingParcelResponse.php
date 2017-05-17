@@ -32,17 +32,22 @@ class TrackingParcelResponse extends AbstractResponse
         }
 
         if(!empty($this->data->shipments->e)) {
-            foreach($this->data->shipments->e->tracking->row AS $quote) {
+            $row = 0;
+            foreach($this->data->shipments->e->tracking->row as $quote) {
                 $quote = json_decode(json_encode($quote));
+                if(!$row && $quote->event == 'office') {
+                    $quote->event = 'sender_office';
+                }
                 $result->add([
                     'id' => md5($quote->time),
                     'name' => $quote->name,
                     'events' => $this->_getEvents($quote),
-                    'shipment_date' => Carbon::createFromFormat('Y-m-d H:i:s', $quote->evn_time),
-                    'estimated_delivery_date' => null,
+                    'shipment_date' => Carbon::createFromFormat('Y-m-d H:i:s', $quote->evn_time, $this->getRequest()->getReceiverTimeZone()),
+                    'estimated_delivery_date' => Carbon::createFromFormat('Y-m-d', (string)$this->data->shipments->e->expected_delivery_day, $this->getRequest()->getReceiverTimeZone()),
                     'origin_service_area' => null,
                     'destination_service_area' => new Component(['id' => md5(json_encode($quote->name)), 'name' => $quote->name]),
                 ]);
+                $row++;
             }
         }
         return $result;
