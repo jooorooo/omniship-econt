@@ -8,72 +8,122 @@
 
 namespace Omniship\Econt\Lib\Response;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class Zone implements Arrayable, Jsonable
+class Zone implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id;
+    protected $values = array(
+        'id' => ['type' => 'float'],
+        'name', 'name_en', 'national',
+        'is_ee' => ['type' => 'bool'],
+        'updated_time'
+    );
 
-    public $name;
-
-    public $name_en;
-
-    public $national;
-
-    public $is_ee;
-
-    public $updated_time;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float|null $id
+     * @return $this
+     */
+    public function setId($id)
     {
-        if(!empty($element->id)) {
-            $this->id = (string)$element->id;
-        }
-        if(!empty($element->name)) {
-            $this->name = (string)$element->name;
-        }
-        if(!empty($element->name_en)) {
-            $this->name_en = (string)$element->name_en;
-        }
-        if(!empty($element->national)) {
-            $this->national = (string)$element->national;
-        }
-        if(!empty($element->is_ee)) {
-            $this->is_ee = (string)$element->is_ee;
-        }
-        if(!empty($element->updated_time)) {
-            $this->updated_time = (string)$element->updated_time;
-        }
+        return $this->setParameter('id', $id);
     }
 
-    public function getId() {
-        return $this->id;
+    /**
+     * @return float
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
     }
 
-    public function getName() {
-        return $this->name;
+    /**
+     * @param string|null $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        return $this->setParameter('name', $name);
     }
 
-    public function getNameEn() {
-        return $this->name_en;
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getParameter('name');
     }
 
-    public function getNational() {
-        return $this->national;
+    /**
+     * @param string|null $name_en
+     * @return $this
+     */
+    public function setNameEn($name_en)
+    {
+        return $this->setParameter('name_en', $name_en);
     }
 
-    public function getIsEe() {
-        return $this->is_ee;
+    /**
+     * @return string
+     */
+    public function getNameEn()
+    {
+        return $this->getParameter('name_en');
     }
 
-    public function getUpdatedTime() {
-        return $this->updated_time;
+    /**
+     * @param string|null $national
+     * @return $this
+     */
+    public function setNational($national)
+    {
+        return $this->setParameter('national', $national);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNational()
+    {
+        return $this->getParameter('national');
+    }
+
+    /**
+     * @param bool|null $is_ee
+     * @return $this
+     */
+    public function setIsEe($is_ee)
+    {
+        return $this->setParameter('is_ee', $is_ee);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEe()
+    {
+        return $this->getParameter('is_ee');
+    }
+
+    /**
+     * @param string|null $updated_time
+     * @return $this
+     */
+    public function setUpdatedTime($updated_time)
+    {
+        return $this->setParameter('updated_time', $updated_time);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdatedTime()
+    {
+        return $this->getParameter('updated_time');
     }
 
 }

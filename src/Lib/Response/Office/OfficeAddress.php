@@ -8,126 +8,225 @@
 
 namespace Omniship\Econt\Lib\Response\Office;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class OfficeAddress implements Arrayable, Jsonable
+class OfficeAddress implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id_quarter;
+    protected $values = array(
+        'id_quarter' => ['type' => 'float'],
+        'quarter_name', 'quarter_name_en',
+        'id_street' => ['type' => 'float'],
+        'street_name', 'street_name_en',
+        'num', 'bl', 'vh', 'et', 'ap', 'other'
+    );
 
-    public $quarter_name;
-
-    public $quarter_name_en;
-
-    public $id_street;
-
-    public $street_name;
-
-    public $street_name_en;
-
-    public $num;
-
-    public $bl;
-
-    public $vh;
-
-    public $et;
-
-    public $ap;
-
-    public $other;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param string|null $id_quarter
+     * @return $this
+     */
+    public function setIdQuarter($id_quarter)
     {
-        if(!empty($element->id_quarter)) {
-            $this->id_quarter = (string)$element->id_quarter;
-        }
-        if(!empty($element->quarter_name)) {
-            $this->quarter_name = (string)$element->quarter_name;
-        }
-        if(!empty($element->quarter_name_en)) {
-            $this->quarter_name_en = (string)$element->quarter_name_en;
-        }
-        if(!empty($element->id_street)) {
-            $this->id_street = (string)$element->id_street;
-        }
-        if(!empty($element->street_name)) {
-            $this->street_name = (string)$element->street_name;
-        }
-        if(!empty($element->street_name_en)) {
-            $this->street_name_en = (string)$element->street_name_en;
-        }
-        if(!empty($element->num)) {
-            $this->num = (string)$element->num;
-        }
-        if(!empty($element->bl)) {
-            $this->bl = (string)$element->bl;
-        }
-        if(!empty($element->vh)) {
-            $this->vh = (string)$element->vh;
-        }
-        if(!empty($element->et)) {
-            $this->et = (string)$element->et;
-        }
-        if(!empty($element->ap)) {
-            $this->ap = (string)$element->ap;
-        }
-        if(!empty($element->other)) {
-            $this->other = (string)$element->other;
-        }
+        return $this->setParameter('id_quarter', $id_quarter);
     }
 
-    public function getIdQuarter() {
-        return $this->id_quarter;
+    /**
+     * @return string
+     */
+    public function getIdQuarter()
+    {
+        return $this->getParameter('id_quarter');
     }
 
-    public function getQuarterName() {
-        return $this->quarter_name;
+    /**
+     * @param string|null $quarter_name
+     * @return $this
+     */
+    public function setQuarterName($quarter_name)
+    {
+        return $this->setParameter('quarter_name', $quarter_name);
     }
 
-    public function getQuarterNameEn() {
-        return $this->quarter_name_en;
+    /**
+     * @return string
+     */
+    public function getQuarterName()
+    {
+        return $this->getParameter('quarter_name');
     }
 
-    public function getIdStreet() {
-        return $this->id_street;
+    /**
+     * @param string|null $quarter_name_en
+     * @return $this
+     */
+    public function setQuarterNameEn($quarter_name_en)
+    {
+        return $this->setParameter('quarter_name_en', $quarter_name_en);
     }
 
-    public function getStreetName() {
-        return $this->street_name;
+    /**
+     * @return string
+     */
+    public function getQuarterNameEn()
+    {
+        return $this->getParameter('quarter_name_en');
     }
 
-    public function getStreetNameEn() {
-        return $this->street_name_en;
+    /**
+     * @param string|null $id_street
+     * @return $this
+     */
+    public function setIdStreet($id_street)
+    {
+        return $this->setParameter('id_street', $id_street);
     }
 
-    public function getNum() {
-        return $this->num;
+    /**
+     * @return string
+     */
+    public function getIdStreet()
+    {
+        return $this->getParameter('id_street');
     }
 
-    public function getBl() {
-        return $this->bl;
+    /**
+     * @param string|null $street_name
+     * @return $this
+     */
+    public function setStreetName($street_name)
+    {
+        return $this->setParameter('street_name', $street_name);
     }
 
-    public function getVh() {
-        return $this->vh;
+    /**
+     * @return string
+     */
+    public function getStreetName()
+    {
+        return $this->getParameter('street_name');
     }
 
-    public function getEt() {
-        return $this->et;
+    /**
+     * @param string|null $street_name_en
+     * @return $this
+     */
+    public function setStreetNameEn($street_name_en)
+    {
+        return $this->setParameter('street_name_en', $street_name_en);
     }
 
-    public function getAp() {
-        return $this->ap;
+    /**
+     * @return string
+     */
+    public function getStreetNameEn()
+    {
+        return $this->getParameter('street_name_en');
     }
 
-    public function getOther() {
-        return $this->other;
+    /**
+     * @param string|null $num
+     * @return $this
+     */
+    public function setNum($num)
+    {
+        return $this->setParameter('num', $num);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNum()
+    {
+        return $this->getParameter('num');
+    }
+
+    /**
+     * @param string|null $bl
+     * @return $this
+     */
+    public function setBl($bl)
+    {
+        return $this->setParameter('bl', $bl);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBl()
+    {
+        return $this->getParameter('bl');
+    }
+
+    /**
+     * @param string|null $vh
+     * @return $this
+     */
+    public function setVh($vh)
+    {
+        return $this->setParameter('vh', $vh);
+    }
+
+    /**
+     * @return string
+     */
+    public function getVh()
+    {
+        return $this->getParameter('vh');
+    }
+
+    /**
+     * @param string|null $et
+     * @return $this
+     */
+    public function setEt($et)
+    {
+        return $this->setParameter('et', $et);
+    }
+
+    /**
+     * @return string
+     */
+    public function getEt()
+    {
+        return $this->getParameter('et');
+    }
+
+    /**
+     * @param string|null $ap
+     * @return $this
+     */
+    public function setAp($ap)
+    {
+        return $this->setParameter('ap', $ap);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAp()
+    {
+        return $this->getParameter('ap');
+    }
+
+    /**
+     * @param string|null $other
+     * @return $this
+     */
+    public function setOther($other)
+    {
+        return $this->setParameter('other', $other);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOther()
+    {
+        return $this->getParameter('other');
     }
 
 }

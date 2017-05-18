@@ -8,261 +8,488 @@
 
 namespace Omniship\Econt\Lib\Response\Office;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class Office implements Arrayable, Jsonable
+class Office implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id;
-
-    public $name;
-
-    public $name_en;
-
-    public $office_code;
-
-    public $is_machine;
-
-    public $country_code;
-
-    public $id_city;
-
-    public $post_code;
-
-    public $city_name;
-
-    public $city_name_en;
-
-    public $address;
-
-    public $address_en;
-
-    public $latitude;
-
-    public $longitude;
-
-    public $address_details;
-
-    public $office_details;
-
-    public $phone;
-
-    public $email;
-
-    public $work_begin;
-
-    public $work_end;
-
-    public $work_begin_saturday;
-
-    public $work_end_saturday;
-
-    public $time_priority;
-
-    public $updated_time;
-
-    public $hub_code;
-
-    public $hub_name;
-
-    public $hub_name_en;
-
-    public function __construct(SimpleXMLElement $element)
+    protected $values = array(
+        'id' => ['type' => 'float'],
+        'name','name_en','office_code',
+        'is_machine' => ['type' => 'bool'],
+        'country_code','id_city' => ['type' => 'float'],
+        'post_code','city_name',
+        'city_name_en','address','address_en',
+        'latitude' => ['type' => 'float'],'longitude' => ['type' => 'float'],
+        'address_details' => ['sub_object' => OfficeAddress::class],
+        'office_details' => ['sub_object' => OfficeDetail::class],
+        'phone','email','work_begin',
+        'work_end','work_begin_saturday',
+        'work_end_saturday','time_priority',
+        'updated_time','hub_code','hub_name','hub_name_en'
+    );
+    
+    /**
+     * @param float|null $id
+     * @return $this
+     */
+    public function setId($id)
     {
-        if(!empty($element->id)) {
-            $this->id = (string)$element->id;
-        }
-        if(!empty($element->name)) {
-            $this->name = (string)$element->name;
-        }
-        if(!empty($element->name_en)) {
-            $this->name_en = (string)$element->name_en;
-        }
-        if(!empty($element->office_code)) {
-            $this->office_code = (string)$element->office_code;
-        }
-        if(!empty($element->is_machine)) {
-            $this->is_machine = (string)$element->is_machine;
-        }
-        if(!empty($element->country_code)) {
-            $this->country_code = (string)$element->country_code;
-        }
-        if(!empty($element->id_city)) {
-            $this->id_city = (string)$element->id_city;
-        }
-        if(!empty($element->post_code)) {
-            $this->post_code = (string)$element->post_code;
-        }
-        if(!empty($element->city_name)) {
-            $this->city_name = (string)$element->city_name;
-        }
-        if(!empty($element->city_name_en)) {
-            $this->city_name_en = (string)$element->city_name_en;
-        }
-        if(!empty($element->address)) {
-            $this->address = (string)$element->address;
-        }
-        if(!empty($element->address_en)) {
-            $this->address_en = (string)$element->address_en;
-        }
-        if(!empty($element->latitude)) {
-            $this->latitude = (string)$element->latitude;
-        }
-        if(!empty($element->longitude)) {
-            $this->longitude = (string)$element->longitude;
-        }
-        if(!empty($element->address_details)) {
-            $this->address_details = new OfficeAddress($element->address_details);
-        }
-        if(!empty($element->office_details)) {
-            $this->office_details = new OfficeDetail($element->office_details);
-        }
-        if(!empty($element->phone)) {
-            $this->phone = (string)$element->phone;
-        }
-        if(!empty($element->email)) {
-            $this->email = (string)$element->email;
-        }
-        if(!empty($element->work_begin)) {
-            $this->work_begin = (string)$element->work_begin;
-        }
-        if(!empty($element->work_end)) {
-            $this->work_end = (string)$element->work_end;
-        }
-        if(!empty($element->work_begin_saturday)) {
-            $this->work_begin_saturday = (string)$element->work_begin_saturday;
-        }
-        if(!empty($element->work_end_saturday)) {
-            $this->work_end_saturday = (string)$element->work_end_saturday;
-        }
-        if(!empty($element->time_priority)) {
-            $this->time_priority = (string)$element->time_priority;
-        }
-        if(!empty($element->updated_time)) {
-            $this->updated_time = (string)$element->updated_time;
-        }
-        if(!empty($element->hub_code)) {
-            $this->hub_code = (string)$element->hub_code;
-        }
-        if(!empty($element->hub_name)) {
-            $this->hub_name = (string)$element->hub_name;
-        }
-        if(!empty($element->hub_name_en)) {
-            $this->hub_name_en = (string)$element->hub_name_en;
-        }
+        return $this->setParameter('id', $id);
     }
 
-    public function getId() {
-        return $this->id;
+    /**
+     * @return float
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
     }
 
-    public function getName() {
-        return $this->name;
+    /**
+     * @param string|null $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        return $this->setParameter('name', $name);
     }
 
-    public function getNameEn() {
-        return $this->name_en;
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getParameter('name');
     }
 
-    public function getOfficeCode() {
-        return $this->office_code;
+    /**
+     * @param string|null $name_en
+     * @return $this
+     */
+    public function setNameEn($name_en)
+    {
+        return $this->setParameter('name_en', $name_en);
     }
 
-    public function getIsMachine() {
-        return $this->is_machine;
+    /**
+     * @return string
+     */
+    public function getNameEn()
+    {
+        return $this->getParameter('name_en');
     }
 
-    public function getCountryCode() {
-        return $this->country_code;
+    /**
+     * @param string|null $office_code
+     * @return $this
+     */
+    public function setOfficeCode($office_code)
+    {
+        return $this->setParameter('office_code', $office_code);
     }
 
-    public function getIdCity() {
-        return $this->id_city;
+    /**
+     * @return string
+     */
+    public function getOfficeCode()
+    {
+        return $this->getParameter('office_code');
     }
 
-    public function getPostCode() {
-        return $this->post_code;
+    /**
+     * @param string|null $is_machine
+     * @return $this
+     */
+    public function setIsMachine($is_machine)
+    {
+        return $this->setParameter('is_machine', $is_machine);
     }
 
-    public function getCityName() {
-        return $this->city_name;
+    /**
+     * @return string
+     */
+    public function getIsMachine()
+    {
+        return $this->getParameter('is_machine');
     }
 
-    public function getCityNameEn() {
-        return $this->city_name_en;
+    /**
+     * @param string|null $country_code
+     * @return $this
+     */
+    public function setCountryCode($country_code)
+    {
+        return $this->setParameter('country_code', $country_code);
     }
 
-    public function getAddress() {
-        return $this->address;
+    /**
+     * @return string
+     */
+    public function getCountryCode()
+    {
+        return $this->getParameter('country_code');
     }
 
-    public function getAddressEn() {
-        return $this->address_en;
+    /**
+     * @param string|null $id_city
+     * @return $this
+     */
+    public function setIdCity($id_city)
+    {
+        return $this->setParameter('id_city', $id_city);
     }
 
-    public function getLatitude() {
-        return $this->latitude;
+    /**
+     * @return string
+     */
+    public function getIdCity()
+    {
+        return $this->getParameter('id_city');
     }
 
-    public function getLongitude() {
-        return $this->longitude;
+    /**
+     * @param string|null $post_code
+     * @return $this
+     */
+    public function setPostCode($post_code)
+    {
+        return $this->setParameter('post_code', $post_code);
     }
 
-    public function getAddressDetails() {
-        return $this->address_details;
+    /**
+     * @return string
+     */
+    public function getPostCode()
+    {
+        return $this->getParameter('post_code');
     }
 
-    public function getOfficeDetails() {
-        return $this->office_details;
+    /**
+     * @param string|null $city_name
+     * @return $this
+     */
+    public function setCityName($city_name)
+    {
+        return $this->setParameter('city_name', $city_name);
     }
 
-    public function getPhone() {
-        return $this->phone;
+    /**
+     * @return string
+     */
+    public function getCityName()
+    {
+        return $this->getParameter('city_name');
     }
 
-    public function getEmail() {
-        return $this->email;
+    /**
+     * @param string|null $city_name_en
+     * @return $this
+     */
+    public function setCityNameEn($city_name_en)
+    {
+        return $this->setParameter('city_name_en', $city_name_en);
     }
 
-    public function getWorkBegin() {
-        return $this->work_begin;
+    /**
+     * @return string
+     */
+    public function getCityNameEn()
+    {
+        return $this->getParameter('city_name_en');
     }
 
-    public function getWorkEnd() {
-        return $this->work_end;
+    /**
+     * @param string|null $address
+     * @return $this
+     */
+    public function setAddress($address)
+    {
+        return $this->setParameter('address', $address);
     }
 
-    public function getWorkBeginSaturday() {
-        return $this->work_begin_saturday;
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->getParameter('address');
     }
 
-    public function getWorkEndSaturday() {
-        return $this->work_end_saturday;
+    /**
+     * @param string|null $address_en
+     * @return $this
+     */
+    public function setAddressEn($address_en)
+    {
+        return $this->setParameter('address_en', $address_en);
     }
 
-    public function getTimePriority() {
-        return $this->time_priority;
+    /**
+     * @return string
+     */
+    public function getAddressEn()
+    {
+        return $this->getParameter('address_en');
     }
 
-    public function getUpdatedTime() {
-        return $this->updated_time;
+    /**
+     * @param string|null $latitude
+     * @return $this
+     */
+    public function setLatitude($latitude)
+    {
+        return $this->setParameter('latitude', $latitude);
     }
 
-    public function getHubCode() {
-        return $this->hub_code;
+    /**
+     * @return string
+     */
+    public function getLatitude()
+    {
+        return $this->getParameter('latitude');
     }
 
-    public function getHubName() {
-        return $this->hub_name;
+    /**
+     * @param string|null $longitude
+     * @return $this
+     */
+    public function setLongitude($longitude)
+    {
+        return $this->setParameter('longitude', $longitude);
     }
 
-    public function getHubNameEn() {
-        return $this->hub_name_en;
+    /**
+     * @return string
+     */
+    public function getLongitude()
+    {
+        return $this->getParameter('longitude');
+    }
+
+    /**
+     * @param OfficeAddress|array|null $address_details
+     * @return $this
+     */
+    public function setAddressDetails($address_details)
+    {
+        return $this->setParameter('address_details', $address_details);
+    }
+
+    /**
+     * @return null|OfficeAddress
+     */
+    public function getAddressDetails()
+    {
+        return $this->getParameter('address_details');
+    }
+
+    /**
+     * @param OfficeDetail|array|null $office_details
+     * @return $this
+     */
+    public function setOfficeDetails($office_details)
+    {
+        return $this->setParameter('office_details', $office_details);
+    }
+
+    /**
+     * @return null|OfficeDetail
+     */
+    public function getOfficeDetails()
+    {
+        return $this->getParameter('office_details');
+    }
+
+    /**
+     * @param string|null $phone
+     * @return $this
+     */
+    public function setPhone($phone)
+    {
+        return $this->setParameter('phone', $phone);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->getParameter('phone');
+    }
+
+    /**
+     * @param string|null $email
+     * @return $this
+     */
+    public function setEmail($email)
+    {
+        return $this->setParameter('email', $email);
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->getParameter('email');
+    }
+
+    /**
+     * @param string|null $work_begin
+     * @return $this
+     */
+    public function setWorkBegin($work_begin)
+    {
+        return $this->setParameter('work_begin', $work_begin);
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkBegin()
+    {
+        return $this->getParameter('work_begin');
+    }
+
+    /**
+     * @param string|null $work_end
+     * @return $this
+     */
+    public function setWorkEnd($work_end)
+    {
+        return $this->setParameter('work_end', $work_end);
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkEnd()
+    {
+        return $this->getParameter('work_end');
+    }
+
+    /**
+     * @param string|null $work_begin_saturday
+     * @return $this
+     */
+    public function setWorkBeginSaturday($work_begin_saturday)
+    {
+        return $this->setParameter('work_begin_saturday', $work_begin_saturday);
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkBeginSaturday()
+    {
+        return $this->getParameter('work_begin_saturday');
+    }
+
+    /**
+     * @param string|null $work_end_saturday
+     * @return $this
+     */
+    public function setWorkEndSaturday($work_end_saturday)
+    {
+        return $this->setParameter('work_end_saturday', $work_end_saturday);
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkEndSaturday()
+    {
+        return $this->getParameter('work_end_saturday');
+    }
+
+    /**
+     * @param string|null $time_priority
+     * @return $this
+     */
+    public function setTimePriority($time_priority)
+    {
+        return $this->setParameter('time_priority', $time_priority);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimePriority()
+    {
+        return $this->getParameter('time_priority');
+    }
+
+    /**
+     * @param string|null $updated_time
+     * @return $this
+     */
+    public function setUpdatedTime($updated_time)
+    {
+        return $this->setParameter('updated_time', $updated_time);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdatedTime()
+    {
+        return $this->getParameter('updated_time');
+    }
+
+    /**
+     * @param string|null $hub_code
+     * @return $this
+     */
+    public function setHubCode($hub_code)
+    {
+        return $this->setParameter('hub_code', $hub_code);
+    }
+
+    /**
+     * @return string
+     */
+    public function getHubCode()
+    {
+        return $this->getParameter('hub_code');
+    }
+
+    /**
+     * @param string|null $hub_name
+     * @return $this
+     */
+    public function setHubName($hub_name)
+    {
+        return $this->setParameter('hub_name', $hub_name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getHubName()
+    {
+        return $this->getParameter('hub_name');
+    }
+
+    /**
+     * @param string|null $hub_name_en
+     * @return $this
+     */
+    public function setHubNameEn($hub_name_en)
+    {
+        return $this->setParameter('hub_name_en', $hub_name_en);
+    }
+
+    /**
+     * @return string
+     */
+    public function getHubNameEn()
+    {
+        return $this->getParameter('hub_name_en');
     }
 
 }

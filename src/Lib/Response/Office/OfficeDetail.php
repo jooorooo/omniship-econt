@@ -8,54 +8,86 @@
 
 namespace Omniship\Econt\Lib\Response\Office;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class OfficeDetail implements Arrayable, Jsonable
+class OfficeDetail implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $courier;
+    protected $values = array(
+        'courier' => ['type' => 'bool'], 'post' => ['type' => 'bool'],
+        'cargo' => ['type' => 'bool'], 'cargo_express' => ['type' => 'bool']
+    );
 
-    public $post;
-
-    public $cargo;
-
-    public $cargo_express;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param bool|null $courier
+     * @return $this
+     */
+    public function setCourier($courier)
     {
-        if(!empty($element->courier)) {
-            $this->courier = (string)$element->courier;
-        }
-        if(!empty($element->post)) {
-            $this->post = (string)$element->post;
-        }
-        if(!empty($element->cargo)) {
-            $this->cargo = (string)$element->cargo;
-        }
-        if(!empty($element->cargo_express)) {
-            $this->cargo_express = (string)$element->cargo_express;
-        }
+        return $this->setParameter('courier', $courier);
     }
 
-    public function getCourier() {
-        return $this->courier;
+    /**
+     * @return bool|null
+     */
+    public function getCourier()
+    {
+        return $this->getParameter('courier');
     }
 
-    public function getPost() {
-        return $this->post;
+    /**
+     * @param bool|null $post
+     * @return $this
+     */
+    public function setPost($post)
+    {
+        return $this->setParameter('post', $post);
     }
 
-    public function getCargo() {
-        return $this->cargo;
+    /**
+     * @return bool|null
+     */
+    public function getPost()
+    {
+        return $this->getParameter('post');
     }
 
-    public function getCargoExpress() {
-        return $this->cargo_express;
+    /**
+     * @param bool|null $cargo
+     * @return $this
+     */
+    public function setCargo($cargo)
+    {
+        return $this->setParameter('cargo', $cargo);
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getCargo()
+    {
+        return $this->getParameter('cargo');
+    }
+
+    /**
+     * @param bool|null $cargo_express
+     * @return $this
+     */
+    public function setCargoExpress($cargo_express)
+    {
+        return $this->setParameter('cargo_express', $cargo_express);
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getCargoExpress()
+    {
+        return $this->getParameter('cargo_express');
     }
 
 }

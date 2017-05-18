@@ -6,6 +6,7 @@ namespace Omniship\Econt\Lib\Response\City;
 
 use Omniship\Interfaces\ArrayableInterface;
 use Omniship\Interfaces\JsonableInterface;
+use SimpleXMLElement;
 
 class AttachOfficeBag implements \IteratorAggregate, \Countable, ArrayableInterface, \JsonSerializable, JsonableInterface
 {
@@ -23,9 +24,23 @@ class AttachOfficeBag implements \IteratorAggregate, \Countable, ArrayableInterf
      *
      * @param array $offices An array of offices
      */
-    public function __construct(array $offices = array())
+    public function __construct($offices = array())
     {
-        $this->replace($offices);
+        if($offices instanceof SimpleXMLElement) {
+            foreach ($offices->children() as $shipment_type) {
+                foreach ($shipment_type->children() as $delivery_type) {
+                    foreach ($delivery_type->office_code as $office_code) {
+                        $this->add([
+                            'office_code' => (string)$office_code,
+                            'shipment_type' => $shipment_type->getName(),
+                            'delivery_type' => $delivery_type->getName()
+                        ]);
+                    }
+                }
+            }
+        } elseif(is_array($offices)) {
+            $this->replace($offices);
+        }
     }
 
     /**

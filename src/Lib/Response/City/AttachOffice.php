@@ -8,54 +8,86 @@
 
 namespace Omniship\Econt\Lib\Response\City;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class AttachOffice implements Arrayable, Jsonable
+class AttachOffice implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $office_code;
+    protected $values = array(
+        'office_code', 'shipment_type', 'delivery_type',
+        'city_id' => ['type' => 'float']
+    );
 
-    public $shipment_type;
-
-    public $delivery_type;
-
-    public $city_id;
-
-    public function __construct(array $element)
+    /**
+     * @param string $office_code
+     * @return $this
+     */
+    public function setOfficeCode($office_code)
     {
-        $element = (object)$element;
-        if(!empty($element->office_code)) {
-            $this->office_code = (string)$element->office_code;
-        }
-        if(!empty($element->shipment_type)) {
-            $this->shipment_type = (string)$element->shipment_type;
-        }
-        if(!empty($element->delivery_type)) {
-            $this->delivery_type = (string)$element->delivery_type;
-        }
-        if(!empty($element->city_id)) {
-            $this->city_id = (string)$element->city_id;
-        }
+        return $this->setParameter('office_code', $office_code);
     }
 
-    public function getOfficeCode() {
-        return $this->office_code;
+    /**
+     * @return string
+     */
+    public function getOfficeCode()
+    {
+        return $this->getParameter('office_code');
     }
 
-    public function getShipmentType() {
-        return $this->shipment_type;
+    /**
+     * @param string $shipment_type
+     * @return $this
+     */
+    public function setShipmentType($shipment_type)
+    {
+        return $this->setParameter('shipment_type', $shipment_type);
     }
 
-    public function getDeliveryType() {
-        return $this->delivery_type;
+    /**
+     * @return string
+     */
+    public function getShipmentType()
+    {
+        return $this->getParameter('shipment_type');
     }
 
-    public function getCityId() {
-        return $this->city_id;
+    /**
+     * @param string $delivery_type
+     * @return $this
+     */
+    public function setDeliveryType($delivery_type)
+    {
+        return $this->setParameter('delivery_type', $delivery_type);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeliveryType()
+    {
+        return $this->getParameter('delivery_type');
+    }
+
+    /**
+     * @param float $city_id
+     * @return $this
+     */
+    public function setCityId($city_id)
+    {
+        return $this->setParameter('city_id', $city_id);
+    }
+
+    /**
+     * @return float
+     */
+    public function getCityId()
+    {
+        return $this->getParameter('city_id');
     }
 
 }

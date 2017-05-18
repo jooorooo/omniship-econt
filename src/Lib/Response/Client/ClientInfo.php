@@ -8,90 +8,156 @@
 
 namespace Omniship\Econt\Lib\Response\Client;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class ClientInfo implements Arrayable, Jsonable
+class ClientInfo implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id;
+    protected $values = array(
+        'id' => ['type' => 'float'],
+        'key_word', 'EIN', 'dds_ein',
+        'address', 'mol', 'business_phone',
+        'business_email'
+    );
 
-    public $key_word;
-
-    public $EIN;
-
-    public $dds_ein;
-
-    public $address;
-
-    public $mol;
-
-    public $business_phone;
-
-    public $business_email;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float|null $id
+     * @return $this
+     */
+    public function setId($id)
     {
-        if(!empty($element->id)) {
-            $this->id = (string)$element->id;
-        }
-        if(!empty($element->key_word)) {
-            $this->key_word = (string)$element->key_word;
-        }
-        if(!empty($element->EIN)) {
-            $this->EIN = (string)$element->EIN;
-        }
-        if(!empty($element->dds_ein)) {
-            $this->dds_ein = (string)$element->dds_ein;
-        }
-        if(!empty($element->address)) {
-            $this->address = new ClientAddress($element->address);
-        }
-        if(!empty($element->mol)) {
-            $this->mol = (string)$element->mol;
-        }
-        if(!empty($element->business_phone)) {
-            $this->business_phone = (string)$element->business_phone;
-        }
-        if(!empty($element->business_email)) {
-            $this->business_email = (string)$element->business_email;
-        }
+        return $this->setParameter('id', $id);
     }
 
-    public function getId() {
-        return $this->id;
+    /**
+     * @return float
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
     }
 
-    public function getKeyWord() {
-        return $this->key_word;
+    /**
+     * @param string|null $key_word
+     * @return $this
+     */
+    public function setKeyWord($key_word)
+    {
+        return $this->setParameter('key_word', $key_word);
     }
 
-    public function getEIN() {
-        return $this->EIN;
+    /**
+     * @return string
+     */
+    public function getKeyWord()
+    {
+        return $this->getParameter('key_word');
     }
 
-    public function getDdsEin() {
-        return $this->dds_ein;
+    /**
+     * @param string|null $EIN
+     * @return $this
+     */
+    public function setEIN($EIN)
+    {
+        return $this->setParameter('EIN', $EIN);
     }
 
-    public function getAddress() {
-        return $this->address;
+    /**
+     * @return string
+     */
+    public function getEIN()
+    {
+        return $this->getParameter('EIN');
     }
 
-    public function getMol() {
-        return $this->mol;
+    /**
+     * @param string|null $dds_ein
+     * @return $this
+     */
+    public function setDdsEin($dds_ein)
+    {
+        return $this->setParameter('dds_ein', $dds_ein);
     }
 
-    public function getPhone() {
-        return $this->business_phone;
+    /**
+     * @return string
+     */
+    public function getDdsEin()
+    {
+        return $this->getParameter('dds_ein');
     }
 
-    public function getEmail() {
-        return $this->business_email;
+    /**
+     * @param string|null $address
+     * @return $this
+     */
+    public function setAddress($address)
+    {
+        return $this->setParameter('address', $address);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->getParameter('address');
+    }
+
+    /**
+     * @param string|null $mol
+     * @return $this
+     */
+    public function setMol($mol)
+    {
+        return $this->setParameter('mol', $mol);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMol()
+    {
+        return $this->getParameter('mol');
+    }
+
+    /**
+     * @param string|null $business_phone
+     * @return $this
+     */
+    public function setBusinessPhone($business_phone)
+    {
+        return $this->setParameter('business_phone', $business_phone);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBusinessPhone()
+    {
+        return $this->getParameter('business_phone');
+    }
+
+    /**
+     * @param string|null $business_email
+     * @return $this
+     */
+    public function setBusinessEmail($business_email)
+    {
+        return $this->setParameter('business_email', $business_email);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBusinessEmail()
+    {
+        return $this->getParameter('business_email');
     }
 
 }

@@ -14,6 +14,10 @@ class TrackingParcelRequest extends AbstractRequest
      * @return array
      */
     public function getData() {
+
+        var_dump($this->getClient()->getCities(null, 'София'));
+        exit;
+
         return $this->getParcelId();
     }
 
