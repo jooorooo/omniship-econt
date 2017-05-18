@@ -6,18 +6,21 @@
  * Time: 17:22 ч.
  */
 
-namespace Omniship\FedEx\Http;
+namespace Omniship\Econt\Http;
 
 use Carbon\Carbon;
 use Omniship\Common\ShippingServiceBag;
+use Omniship\Econt\Lib\Response\Parcel;
 use Omniship\Message\AbstractResponse;
 
 class ShippingServicesResponse extends AbstractResponse
 {
     /**
-     * @var \SimpleXMLElement
+     * The data contained in the response.
+     *
+     * @var Parcel
      */
-    protected $xml;
+    protected $data;
 
     /**
      * @return ShippingServiceBag
@@ -28,28 +31,21 @@ class ShippingServicesResponse extends AbstractResponse
         if(!is_null($this->getCode())) {
             return $result;
         }
+        
+        $result->add([
+            'id' => md5($this->data->getDeliveryDate()),
+            'name' => null,
+            'description' => null,
+            'price' => $this->data->getLoadingPrice()->getTotal(),
+            'pickup_date' => Carbon::now($this->request->getSenderTimeZone()),
+            'pickup_time' => Carbon::now($this->request->getSenderTimeZone()),
+            'delivery_date' => Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->request->getReceiverTimeZone()),
+            'delivery_time' => null,
+            'currency' => $this->data->getLoadingPrice()->getCurrency(),
+            'tax' => 0,
+            'insurance' => 0
+        ]);
 
-        if(!empty($this->data->RateReplyDetails)) {
-            foreach($this->data->RateReplyDetails AS $quote) {
-                if(!empty($quote->RatedShipmentDetails)) {
-                    foreach($quote->RatedShipmentDetails AS $shipment_details) {
-                        $result->add([
-                            'id' => $quote->ServiceType,
-                            'name' => $quote->ServiceType,
-                            'description' => !empty($quote->CommitDetails->DeliveryMessages) ? $quote->CommitDetails->DeliveryMessages : '',
-                            'price' => $shipment_details->ShipmentRateDetail->TotalNetChargeWithDutiesAndTaxes->Amount,
-                            'pickup_date' => Carbon::now($this->request->getSenderTimeZone()),
-                            'pickup_time' => Carbon::now($this->request->getSenderTimeZone()),
-                            'delivery_date' => !empty($quote->DeliveryTimestamp) ? Carbon::createFromFormat('Y-m-d\TH:i:s', $quote->DeliveryTimestamp, $this->request->getReceiverTimeZone()) : null,
-                            'delivery_time' => !empty($quote->DeliveryTimestamp) ? Carbon::createFromFormat('Y-m-d\TH:i:s', $quote->DeliveryTimestamp, $this->request->getReceiverTimeZone()) : null,
-                            'currency' => $shipment_details->ShipmentRateDetail->TotalNetChargeWithDutiesAndTaxes->Currency,
-                            'tax' => $shipment_details->ShipmentRateDetail->TotalTaxes->Amount,
-                            'insurance' => 0
-                        ]);
-                    }
-                }
-            }
-        }
         return $result;
     }
 
@@ -58,16 +54,10 @@ class ShippingServicesResponse extends AbstractResponse
      */
     public function getMessage()
     {
-        if(!empty($this->data->Notifications)) {
-            if(is_array($this->data->Notifications)) {
-                foreach ($this->data->Notifications AS $notification) {
-                    if ($notification->Severity == 'ERROR' || empty($this->data->RateReplyDetails)) {
-                        return $notification->LocalizedMessage;
-                    }
-                }
-            } elseif(empty($this->data->RateReplyDetails)) {
-                return $this->data->Notifications->LocalizedMessage;
-            }
+        if(is_string($this->data)) {
+            return str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data);
+        } elseif($this->data->getErrorCode() || $this->data->getError()) {
+            return str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data->getError());
         }
         return null;
     }
@@ -77,16 +67,10 @@ class ShippingServicesResponse extends AbstractResponse
      */
     public function getCode()
     {
-        if(!empty($this->data->Notifications)) {
-            if(is_array($this->data->Notifications)) {
-                foreach ($this->data->Notifications AS $notification) {
-                    if ($notification->Severity == 'ERROR') {
-                        return $notification->Code;
-                    }
-                }
-            } elseif(empty($this->data->RateReplyDetails)) {
-                return $this->data->Notifications->Code;
-            }
+        if(is_string($this->data)) {
+            return md5($this->data);
+        } elseif($this->data->getErrorCode() || $this->data->getError()) {
+            return $this->data->getErrorCode() ? : md5($this->data->getError());
         }
         return null;
     }
