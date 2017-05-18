@@ -21,7 +21,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 ## Description
 
 
-This library is a PHP Oriented Object client for the Econt XML API Services.
+This library is a PHP Oriented Object client for the [Econt.bg](http://econt.bg) XML API Services.
 
 
 ## Setup 
