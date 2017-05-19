@@ -8,63 +8,105 @@
 
 namespace Omniship\Econt\Lib\Response;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class Region implements Arrayable, Jsonable
+class Region implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id;
+    protected $values = array(
+        'id' => ['type' => 'float'],
+        'name', 'code',
+        'id_city' => ['type' => 'float'],
+        'updated_time'
+    );
 
-    public $name;
-
-    public $code;
-
-    public $id_city;
-
-    public $updated_time;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float $id
+     * @return $this
+     */
+    public function setId($id)
     {
-        if(!empty($element->id)) {
-            $this->id = (string)$element->id;
-        }
-        if(!empty($element->name)) {
-            $this->name = (string)$element->name;
-        }
-        if(!empty($element->code)) {
-            $this->code = (string)$element->code;
-        }
-        if(!empty($element->id_city)) {
-            $this->id_city = (string)$element->id_city;
-        }
-        if(!empty($element->updated_time)) {
-            $this->updated_time = (string)$element->updated_time;
-        }
+        return $this->setParameter('id', $id);
     }
 
-    public function getId() {
-        return $this->id;
+    /**
+     * @return float
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
     }
 
-    public function getName() {
-        return $this->name;
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        return $this->setParameter('name', $name);
     }
 
-    public function getCode() {
-        return $this->code;
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getParameter('name');
     }
 
-    public function getIdCity() {
-        return $this->id_city;
+    /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code)
+    {
+        return $this->setParameter('code', $code);
     }
 
-    public function getUpdatedTime() {
-        return $this->updated_time;
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->getParameter('code');
     }
 
+    /**
+     * @param float $id_city
+     * @return $this
+     */
+    public function setIdCity($id_city)
+    {
+        return $this->setParameter('id_city', $id_city);
+    }
+
+    /**
+     * @return float
+     */
+    public function getIdCity()
+    {
+        return $this->getParameter('id_city');
+    }
+
+    /**
+     * @param string $updated_time
+     * @return $this
+     */
+    public function setUpdatedTime($updated_time)
+    {
+        return $this->setParameter('updated_time', $updated_time);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdatedTime()
+    {
+        return $this->getParameter('updated_time');
+    }
+    
 }

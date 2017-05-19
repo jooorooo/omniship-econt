@@ -8,72 +8,121 @@
 
 namespace Omniship\Econt\Lib\Response;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class Street implements Arrayable, Jsonable
+class Street implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id;
+    protected $values = array(
+        'id' => ['type' => 'float'],
+        'name', 'name_en', 'city_post_code',
+        'id_city' => ['type' => 'float'], 'updated_time'
+    );
 
-    public $name;
-
-    public $name_en;
-
-    public $city_post_code;
-
-    public $id_city;
-
-    public $updated_time;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float $id
+     * @return $this
+     */
+    public function setId($id)
     {
-        if(!empty($element->id)) {
-            $this->id = (string)$element->id;
-        }
-        if(!empty($element->name)) {
-            $this->name = (string)$element->name;
-        }
-        if(!empty($element->name_en)) {
-            $this->name_en = (string)$element->name_en;
-        }
-        if(!empty($element->city_post_code)) {
-            $this->city_post_code = (string)$element->city_post_code;
-        }
-        if(!empty($element->id_city)) {
-            $this->id_city = (string)$element->id_city;
-        }
-        if(!empty($element->updated_time)) {
-            $this->updated_time = (string)$element->updated_time;
-        }
+        return $this->setParameter('id', $id);
     }
 
-    public function getId() {
-        return $this->id;
+    /**
+     * @return float
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
     }
 
-    public function getName() {
-        return $this->name;
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        return $this->setParameter('name', $name);
     }
 
-    public function getNameEn() {
-        return $this->name_en;
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getParameter('name');
     }
 
-    public function getCityPostCode() {
-        return $this->city_post_code;
+    /**
+     * @param string $name_en
+     * @return $this
+     */
+    public function setNameEn($name_en)
+    {
+        return $this->setParameter('name_en', $name_en);
     }
 
-    public function getIdCity() {
-        return $this->id_city;
+    /**
+     * @return string
+     */
+    public function getNameEn()
+    {
+        return $this->getParameter('name_en');
     }
 
-    public function getUpdatedTime() {
-        return $this->updated_time;
+    /**
+     * @param string $city_post_code
+     * @return $this
+     */
+    public function setCityPostCode($city_post_code)
+    {
+        return $this->setParameter('city_post_code', $city_post_code);
     }
 
+    /**
+     * @return string
+     */
+    public function getCityPostCode()
+    {
+        return $this->getParameter('city_post_code');
+    }
+
+    /**
+     * @param float $id_city
+     * @return $this
+     */
+    public function setIdCity($id_city)
+    {
+        return $this->setParameter('id_city', $id_city);
+    }
+
+    /**
+     * @return float
+     */
+    public function getIdCity()
+    {
+        return $this->getParameter('id_city');
+    }
+
+    /**
+     * @param string $updated_time
+     * @return $this
+     */
+    public function setUpdatedTime($updated_time)
+    {
+        return $this->setParameter('updated_time', $updated_time);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdatedTime()
+    {
+        return $this->getParameter('updated_time');
+    }
+    
 }

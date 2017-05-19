@@ -8,104 +8,158 @@
 
 namespace Omniship\Econt\Lib\Response\Client;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class Client implements Arrayable, Jsonable
+class Client implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id;
+    protected $values = array(
+        'id' => ['type' => 'float'],
+        'ein', 'name', 'name_en', 'client_type',
+        'key_word', 'cd_agreements' => ['sub_object' => CdAgreementBag::class],
+        'instructions' => ['sub_object' => InstructionBag::class]
+    );
 
-    public $ein;
-
-    public $name;
-
-    public $name_en;
-
-    public $client_type;
-
-    public $key_word;
-
-    public $cd_agreements;
-
-    public $instructions;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float $id
+     * @return $this
+     */
+    public function setId($id)
     {
-        if(!empty($element->id)) {
-            $this->id = (string)$element->id;
-        }
-        if(!empty($element->ein)) {
-            $this->ein = (string)$element->ein;
-        }
-        if(!empty($element->name)) {
-            $this->name = (string)$element->name;
-        }
-        if(!empty($element->name_en)) {
-            $this->name_en = (string)$element->name_en;
-        }
-        if(!empty($element->client_type)) {
-            $this->client_type = (string)$element->client_type;
-        }
-        if(!empty($element->key_word)) {
-            $this->key_word = (string)$element->key_word;
-        }
-        $this->cd_agreements = [];
-        if(!empty($element->cd_agreements)) {
-            foreach($element->cd_agreements->cd_agreement AS $cd) {
-                $this->cd_agreements[] = [
-                    'id' => (string)$cd->id,
-                    'num' => (string)$cd->num,
-                    'is_bank' => (string)$cd->is_bank,
-                ];
-            }
-        }
-        $this->instructions = [];
-        if(!empty($element->instructions)) {
-            foreach($element->instructions->e AS $instruction) {
-                $this->instructions[] = [
-                    'id' => (string)$instruction->id,
-                    'type' => (string)$instruction->type,
-                    'template' => (string)$instruction->template,
-                ];
-            }
-        }
+        return $this->setParameter('id', $id);
     }
 
-    public function getId() {
-        return $this->id;
+    /**
+     * @return float
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
     }
 
-    public function getEin() {
-        return $this->ein;
+    /**
+     * @param string $ein
+     * @return $this
+     */
+    public function setEin($ein)
+    {
+        return $this->setParameter('ein', $ein);
     }
 
-    public function getName() {
-        return $this->name;
+    /**
+     * @return string
+     */
+    public function getEin()
+    {
+        return $this->getParameter('ein');
     }
 
-    public function getNameEn() {
-        return $this->name_en;
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        return $this->setParameter('name', $name);
     }
 
-    public function getClientType() {
-        return $this->client_type;
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getParameter('name');
     }
 
-    public function getKeyWord() {
-        return $this->key_word;
+    /**
+     * @param string $name_en
+     * @return $this
+     */
+    public function setNameEn($name_en)
+    {
+        return $this->setParameter('name_en', $name_en);
     }
 
-    public function getCdAgreements() {
-        return $this->cd_agreements;
+    /**
+     * @return string
+     */
+    public function getNameEn()
+    {
+        return $this->getParameter('name_en');
     }
 
-    public function getInstructions() {
-        return $this->instructions;
+    /**
+     * @param string $client_type
+     * @return $this
+     */
+    public function setClientType($client_type)
+    {
+        return $this->setParameter('client_type', $client_type);
     }
+
+    /**
+     * @return string
+     */
+    public function getClientType()
+    {
+        return $this->getParameter('client_type');
+    }
+
+    /**
+     * @param string $key_word
+     * @return $this
+     */
+    public function setKeyWord($key_word)
+    {
+        return $this->setParameter('key_word', $key_word);
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeyWord()
+    {
+        return $this->getParameter('key_word');
+    }
+
+    /**
+     * @param \Omniship\Econt\Lib\Response\Client\CdAgreementBag|array|null $cd_agreements
+     * @return $this
+     */
+    public function setCdAgreements($cd_agreements)
+    {
+        return $this->setParameter('cd_agreements', $cd_agreements);
+    }
+
+    /**
+     * @return \Omniship\Econt\Lib\Response\Client\CdAgreementBag|array|null
+     */
+    public function getCdAgreements()
+    {
+        return $this->getParameter('cd_agreements');
+    }
+
+    /**
+     * @param \Omniship\Econt\Lib\Response\Client\InstructionBag|array|null $instructions
+     * @return $this
+     */
+    public function setInstructions($instructions)
+    {
+        return $this->setParameter('instructions', $instructions);
+    }
+
+    /**
+     * @return \Omniship\Econt\Lib\Response\Client\InstructionBag|array|null
+     */
+    public function getInstructions()
+    {
+        return $this->getParameter('instructions');
+    }
+
+
 
 }

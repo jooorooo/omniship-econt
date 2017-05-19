@@ -8,88 +8,141 @@
 
 namespace Omniship\Econt\Lib\Response\Parcel;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class LoadingPrice implements Arrayable, Jsonable
+class LoadingPrice implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $C;
+    protected $values = array(
+        'C' => ['type' => 'float'],
+        'total' => ['type' => 'float'],
+        'sender_total' => ['type' => 'float'],
+        'receiver_total' => ['type' => 'float'],
+        'other_total' => ['type' => 'float'],
+        'currency', 'currency_code'
+    );
 
-    public $total;
-
-    public $sender_total;
-
-    public $receiver_total;
-
-    public $other_total;
-
-    public $currency;
-
-    public $currency_code;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float $C
+     * @return $this
+     */
+    public function setC($C)
     {
-        if (!empty($element->C)) {
-            $this->C = (string)$element->C;
-        }
-        if (!empty($element->total)) {
-            $this->total = (string)$element->total;
-        }
-        if (!empty($element->sender_total)) {
-            $this->sender_total = (string)$element->sender_total;
-        }
-        if (!empty($element->receiver_total)) {
-            $this->receiver_total = (string)$element->receiver_total;
-        }
-        if (!empty($element->other_total)) {
-            $this->other_total = (string)$element->other_total;
-        }
-        if (!empty($element->currency)) {
-            $this->currency = (string)$element->currency;
-        }
-        if (!empty($element->currency_code)) {
-            $this->currency_code = (string)$element->currency_code;
-        }
+        return $this->setParameter('C', $C);
     }
 
+    /**
+     * @return float
+     */
     public function getC()
     {
-        return $this->C;
+        return $this->getParameter('C');
     }
 
+    /**
+     * @param float $total
+     * @return $this
+     */
+    public function setTotal($total)
+    {
+        return $this->setParameter('total', $total);
+    }
+
+    /**
+     * @return float
+     */
     public function getTotal()
     {
-        return $this->total;
+        return $this->getParameter('total');
     }
 
+    /**
+     * @param float $sender_total
+     * @return $this
+     */
+    public function setSenderTotal($sender_total)
+    {
+        return $this->setParameter('sender_total', $sender_total);
+    }
+
+    /**
+     * @return float
+     */
     public function getSenderTotal()
     {
-        return $this->sender_total;
+        return $this->getParameter('sender_total');
     }
 
+    /**
+     * @param float $receiver_total
+     * @return $this
+     */
+    public function setReceiverTotal($receiver_total)
+    {
+        return $this->setParameter('receiver_total', $receiver_total);
+    }
+
+    /**
+     * @return float
+     */
     public function getReceiverTotal()
     {
-        return $this->receiver_total;
+        return $this->getParameter('receiver_total');
     }
 
+    /**
+     * @param float $other_total
+     * @return $this
+     */
+    public function setOtherTotal($other_total)
+    {
+        return $this->setParameter('other_total', $other_total);
+    }
+
+    /**
+     * @return float
+     */
     public function getOtherTotal()
     {
-        return $this->other_total;
+        return $this->getParameter('other_total');
     }
 
+    /**
+     * @param string $currency
+     * @return $this
+     */
+    public function setCurrency($currency)
+    {
+        return $this->setParameter('currency', $currency);
+    }
+
+    /**
+     * @return string
+     */
     public function getCurrency()
     {
-        return $this->currency;
+        return $this->getParameter('currency');
     }
 
+    /**
+     * @param string $currency_code
+     * @return $this
+     */
+    public function setCurrencyCode($currency_code)
+    {
+        return $this->setParameter('currency_code', $currency_code);
+    }
+
+    /**
+     * @return string
+     */
     public function getCurrencyCode()
     {
-        return $this->currency_code;
+        return $this->getParameter('currency_code');
     }
 
 }

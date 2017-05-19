@@ -9,11 +9,11 @@
 namespace Omniship\Econt\Lib\Response;
 
 use Omniship\Econt\Lib\Response\City\AttachOfficeBag;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
 use Omniship\Traits\Parameters;
 
-class City implements Arrayable, Jsonable
+class City implements ArrayableInterface, JsonableInterface
 {
 
     use Parameters {

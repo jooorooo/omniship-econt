@@ -8,37 +8,51 @@
 
 namespace Omniship\Econt\Lib\Response\Parcel;
 
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class LoadingDiscount implements Arrayable, Jsonable
+class LoadingDiscount implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $amount;
+    protected $values = array(
+        'amount' => ['type' => 'float'], 'description'
+    );
 
-    public $description;
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float $amount
+     * @return $this
+     */
+    public function setAmount($amount)
     {
-        if (!empty($element->amount)) {
-            $this->amount = (string)$element->amount;
-        }
-        if (!empty($element->description)) {
-            $this->description = (string)$element->description;
-        }
+        return $this->setParameter('amount', $amount);
     }
 
+    /**
+     * @return float
+     */
     public function getAmount()
     {
-        return $this->amount;
+        return $this->getParameter('amount');
     }
 
+    /**
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        return $this->setParameter('description', $description);
+    }
+
+    /**
+     * @return string
+     */
     public function getDescription()
     {
-        return $this->description;
+        return $this->getParameter('description');
     }
+    
 }

@@ -9,118 +9,208 @@
 namespace Omniship\Econt\Lib\Response;
 
 use Omniship\Econt\Lib\Response\Office\OfficeAddress;
-use Omniship\Econt\Traits\Formater;
-use Omniship\Interfaces\ArrayableInterface AS Arrayable;
-use Omniship\Interfaces\JsonableInterface AS Jsonable;
-use SimpleXMLElement;
+use Omniship\Interfaces\ArrayableInterface;
+use Omniship\Interfaces\JsonableInterface;
+use Omniship\Traits\Parameters;
 
-class PostBox implements Arrayable, Jsonable
+class PostBox implements ArrayableInterface, JsonableInterface
 {
 
-    use Formater;
+    use Parameters;
 
-    public $id;
-    public $city_type;
-    public $city_name;
-    public $city_name_en;
-    public $post_code;
-    public $id_city;
-    public $num;
-    public $location;
-    public $address;
-    public $address_en;
-    public $address_details;
+    protected $values = array(
+        'id' => ['type' => 'float'],
+        'city_type', 'city_name', 'city_name_en',
+        'post_code', 'id_city' => ['type' => 'float'],
+        'num', 'location', 'address',
+        'address_en', 'address_details' => ['sub_object' => OfficeAddress::class]
+    );
 
-
-    public function __construct(SimpleXMLElement $element)
+    /**
+     * @param float $id
+     * @return $this
+     */
+    public function setId($id)
     {
-        if(!empty($element->id)) {
-            $this->id = (string)$element->id;
-        }
-        if(!empty($element->city_type)) {
-            $this->city_type = $this->_translateType((string)$element->city_type);
-        }
-        if(!empty($element->city_name)) {
-            $this->city_name = (string)$element->city_name;
-        }
-        if(!empty($element->city_name_en)) {
-            $this->city_name_en = (string)$element->city_name_en;
-        }
-        if(!empty($element->post_code)) {
-            $this->post_code = (string)$element->post_code;
-        }
-        if(!empty($element->id_city)) {
-            $this->id_city = (string)$element->id_city;
-        }
-        if(!empty($element->num)) {
-            $this->num = (string)$element->num;
-        }
-        if(!empty($element->location)) {
-            $this->location = (string)$element->location;
-        }
-        if(!empty($element->address)) {
-            $this->address = (string)$element->address;
-        }
-        if(!empty($element->address_en)) {
-            $this->address_en = (string)$element->address_en;
-        }
-        if(!empty($element->address_details)) {
-            $this->address_details = new OfficeAddress($element->address_details);
-        }
+        return $this->setParameter('id', $id);
     }
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getCityType() {
-        return $this->city_type;
-    }
-
-    public function getNum() {
-        return $this->num;
-    }
-
-    public function getLocation() {
-        return $this->location;
-    }
-
-    public function getIdCity() {
-        return $this->id_city;
-    }
-
-    public function getPostCode() {
-        return $this->post_code;
-    }
-
-    public function getCityName() {
-        return $this->city_name;
-    }
-
-    public function getCityNameEn() {
-        return $this->city_name_en;
-    }
-
-    public function getAddress() {
-        return $this->address;
-    }
-
-    public function getAddressEn() {
-        return $this->address_en;
-    }
-
-    public function getAddressDetails() {
-        return $this->address_details;
-    }
-
-    protected function _translateType($type)
+    /**
+     * @return float
+     */
+    public function getId()
     {
-        if ($type == 1) {
-            return 'village';
-        }
-        if ($type == 2) {
-            return 'city';
-        }
-        return $type;
+        return $this->getParameter('id');
     }
+
+    /**
+     * @param string $city_type
+     * @return $this
+     */
+    public function setCityType($city_type)
+    {
+        return $this->setParameter('city_type', $city_type);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCityType()
+    {
+        return $this->getParameter('city_type');
+    }
+
+    /**
+     * @param string $city_name
+     * @return $this
+     */
+    public function setCityName($city_name)
+    {
+        return $this->setParameter('city_name', $city_name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCityName()
+    {
+        return $this->getParameter('city_name');
+    }
+
+    /**
+     * @param string $city_name_en
+     * @return $this
+     */
+    public function setCityNameEn($city_name_en)
+    {
+        return $this->setParameter('city_name_en', $city_name_en);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCityNameEn()
+    {
+        return $this->getParameter('city_name_en');
+    }
+
+    /**
+     * @param string $post_code
+     * @return $this
+     */
+    public function setPostCode($post_code)
+    {
+        return $this->setParameter('post_code', $post_code);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostCode()
+    {
+        return $this->getParameter('post_code');
+    }
+
+    /**
+     * @param float $id_city
+     * @return $this
+     */
+    public function setIdCity($id_city)
+    {
+        return $this->setParameter('id_city', $id_city);
+    }
+
+    /**
+     * @return float
+     */
+    public function getIdCity()
+    {
+        return $this->getParameter('id_city');
+    }
+
+    /**
+     * @param string $num
+     * @return $this
+     */
+    public function setNum($num)
+    {
+        return $this->setParameter('num', $num);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNum()
+    {
+        return $this->getParameter('num');
+    }
+
+    /**
+     * @param string $location
+     * @return $this
+     */
+    public function setLocation($location)
+    {
+        return $this->setParameter('location', $location);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->getParameter('location');
+    }
+
+    /**
+     * @param string $address
+     * @return $this
+     */
+    public function setAddress($address)
+    {
+        return $this->setParameter('address', $address);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->getParameter('address');
+    }
+
+    /**
+     * @param string $address_en
+     * @return $this
+     */
+    public function setAddressEn($address_en)
+    {
+        return $this->setParameter('address_en', $address_en);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddressEn()
+    {
+        return $this->getParameter('address_en');
+    }
+
+    /**
+     * @param \Omniship\Econt\Lib\Response\Office\OfficeAddress|array|null $address_details
+     * @return $this
+     */
+    public function setAddressDetails($address_details)
+    {
+        return $this->setParameter('address_details', $address_details);
+    }
+
+    /**
+     * @return \Omniship\Econt\Lib\Response\Office\OfficeAddress|array|null
+     */
+    public function getAddressDetails()
+    {
+        return $this->getParameter('address_details');
+    }
+    
 }

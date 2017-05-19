@@ -35,19 +35,18 @@ class TrackingParcelResponse extends AbstractResponse
         }
 
         $row = 0;
-        foreach($this->data->getTracking() as $quote) {
-            $quote = json_decode(json_encode($quote));
-            if(!$row && $quote->event == 'office') {
-                $quote->event = 'sender_office';
+        foreach($this->data->getTracking()->all() as $quote) {
+            if(!$row && $quote->getEvent() == 'office') {
+                $quote->setEvent('sender_office');
             }
             $result->add([
-                'id' => md5($quote->time),
-                'name' => $quote->name,
+                'id' => md5($quote->getTime()),
+                'name' => $quote->getName(),
                 'events' => $this->_getEvents($quote),
-                'shipment_date' => Carbon::createFromFormat('Y-m-d H:i:s', $quote->evn_time, $this->getRequest()->getReceiverTimeZone()),
-                'estimated_delivery_date' => Carbon::createFromFormat('Y-m-d', (string)$this->data->expected_delivery_day, $this->getRequest()->getReceiverTimeZone()),
+                'shipment_date' => Carbon::createFromFormat('Y-m-d H:i:s', $quote->getEvnTime(), $this->getRequest()->getReceiverTimeZone()),
+                'estimated_delivery_date' => Carbon::createFromFormat('Y-m-d', (string)$this->data->getExpectedDeliveryDay(), $this->getRequest()->getReceiverTimeZone()),
                 'origin_service_area' => null,
-                'destination_service_area' => new Component(['id' => md5(json_encode($quote->name)), 'name' => $quote->name]),
+                'destination_service_area' => new Component(['id' => md5(json_encode($quote->getName())), 'name' => $quote->getName()]),
             ]);
             $row++;
         }
@@ -85,13 +84,13 @@ class TrackingParcelResponse extends AbstractResponse
      * @param $data
      * @return EventBag
      */
-    protected function _getEvents($data)
+    protected function _getEvents(Shipment\Track $data)
     {
         $result = new EventBag();
-        if(!empty($data->event)) {
+        if($data->getEvent()) {
             $result->add(new Component([
-                'id' => $data->event,
-                'name' => $data->name,
+                'id' => $data->getEvent(),
+                'name' => $data->getName(),
             ]));
         }
         return $result;

@@ -21,7 +21,7 @@ class ClientInfo implements ArrayableInterface, JsonableInterface
         'id' => ['type' => 'float'],
         'key_word', 'EIN', 'dds_ein',
         'address', 'mol', 'business_phone',
-        'business_email'
+        'business_email', 'addresses' => []
     );
 
     /**

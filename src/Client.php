@@ -10,6 +10,7 @@ namespace Omniship\Econt;
 
 use DOMDocument;
 use Omniship\Econt\Lib\Response\City;
+use Omniship\Econt\Lib\Response\Client\ClientAddressBag;
 use Omniship\Econt\Lib\Response\Client\ClientInfo;
 use Omniship\Econt\Lib\Response\Country;
 use Omniship\Econt\Lib\Response\Office\Office;
@@ -40,6 +41,8 @@ class Client
     protected $test_mode = false;
 
     protected $error;
+
+    protected $client_info;
 
     const SERVICE_TESTING_URL = 'http://demo.econt.com/e-econt/xml_service_tool.php';
     const SERVICE_PRODUCTION_URL = 'http://www.econt.com/e-econt/xml_service_tool.php';
@@ -122,11 +125,28 @@ class Client
      * @return bool|ClientInfo
      */
     public function getClientInfo() {
-        $post =  $this->post($this->getServiceEndpoint(), $this->_getRequestData('profile'));
+        $this->client_info = $post =  $this->post($this->getServiceEndpoint(), $this->_getRequestData('profile'));
         if (!empty($post->client_info)) {
             return new ClientInfo($post->client_info);
         }
         return false;
+    }
+
+    /**
+     * Get client addresses
+     * @return bool|ClientAddressBag
+     */
+    public function getClientAddresses() {
+        if(is_null($this->client_info)) {
+            $this->getClientInfo();
+        }
+        $bag = new ClientAddressBag();
+        if (!empty($this->client_info) && !empty($this->client_info->addresses)) {
+            foreach($this->client_info->addresses->e AS $address) {
+                $bag->add($address);
+            }
+        }
+        return $bag;
     }
 
     /**
