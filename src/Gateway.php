@@ -8,6 +8,7 @@
 
 namespace Omniship\Econt;
 
+use Omniship\Econt\Http\CreateBillOfLadingRequest;
 use Omniship\Econt\Http\ShippingServicesRequest;
 use Omniship\Econt\Http\TrackingParcelRequest;
 use Omniship\Common\AbstractGateway;
@@ -82,7 +83,7 @@ class Gateway extends AbstractGateway
 
     /**
      * @param array $parameters
-     * @return \Omniship\Message\AbstractRequest
+     * @return ShippingServicesRequest
      */
     public function getServices(array $parameters = [])
     {
@@ -91,11 +92,29 @@ class Gateway extends AbstractGateway
 
     /**
      * @param array $parameters
-     * @return \Omniship\Message\AbstractRequest
+     * @return TrackingParcelRequest
      */
     public function trackingParcel(array $parameters = [])
     {
         return $this->createRequest(TrackingParcelRequest::class, $this->getParameters() + $parameters);
+    }
+
+    /**
+     * @param array $parameters
+     * @return CreateBillOfLadingRequest
+     */
+    public function createBillOfLading(array $parameters = []) {
+        return $this->createRequest(CreateBillOfLadingRequest::class, $this->getParameters() + $parameters);
+    }
+
+    /**
+     * @param $bol_id
+     * @param null $cancelComment
+     * @return CancelBillOfLadingRequest
+     */
+    public function cancelBillOfLading($bol_id, $cancelComment=null) {
+        $this->setBolId((float)$bol_id)->setCancelComment($cancelComment);
+        return $this->createRequest(CancelBillOfLadingRequest::class, $this->getParameters());
     }
     /**
      * Supports Cash On Delivery
@@ -104,7 +123,7 @@ class Gateway extends AbstractGateway
      */
     public function supportsCashOnDelivery()
     {
-        return false;
+        return true;
     }
     /**
      * Supports Insurance

@@ -20,7 +20,7 @@ class Parcel implements ArrayableInterface, JsonableInterface
     use Parameters;
 
     protected $values = array(
-        'loading_id' => ['type' => 'float'], 'loading_num', 'courier_request_id',
+        'loading_id', 'loading_num', 'courier_request_id',
         'delivery_date', 'loading_price' => ['sub_object' => LoadingPrice::class],
         'loading_discount' => ['sub_object' => LoadingDiscount::class], 'error', 'error_code', 'pdf_url',
         'return_reason', 'prev_parcel_num', 'next_parcels'

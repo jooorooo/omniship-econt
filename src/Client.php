@@ -335,7 +335,7 @@ class Client
     /**
      * Calculate parcel
      * @param array $data
-     * @return boolean|Parcel
+     * @return bool|Parcel
      */
     public function calculate(array $data)
     {
@@ -348,6 +348,15 @@ class Client
             $parcels = new Parcel($post->result->e);
         }
         return $parcels;
+    }
+
+    /**
+     * @param array $data
+     * @return bool|Parcel
+     */
+    public function createBillOfLading(array $data)
+    {
+        return $this->calculate($data);
     }
 
     /**

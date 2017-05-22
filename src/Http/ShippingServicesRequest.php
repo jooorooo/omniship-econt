@@ -40,8 +40,12 @@ class ShippingServicesRequest extends AbstractRequest
         $row['sender']['street_et'] = '';
         $row['sender']['street_ap'] = '';
         $row['sender']['street_other'] = implode(' ', array_filter([$sender_address->getAddress1(), $sender_address->getAddress2(), $sender_address->getAddress3()]));
-        $row['sender']['name'] = $sender_address->getCompanyName();
-        $row['sender']['name_person'] = $sender_address->getFirstName() . ' ' . $sender_address->getLastName();
+        if($company = $sender_address->getCompanyName()) {
+            $row['sender']['name'] = $company;
+            $row['sender']['name_person'] = $sender_address->getFirstName() . ' ' . $sender_address->getLastName();
+        } else {
+            $row['sender']['name'] = $sender_address->getFirstName() . ' ' . $sender_address->getLastName();
+        }
         $row['sender']['phone_num'] = $sender_address->getPhone();
 
         $receiver_address = $this->getReceiverAddress();
@@ -62,8 +66,12 @@ class ShippingServicesRequest extends AbstractRequest
         $row['receiver']['street_et'] = '';
         $row['receiver']['street_ap'] = '';
         $row['receiver']['street_other'] = implode(' ', array_filter([$receiver_address->getAddress1(), $receiver_address->getAddress2(), $receiver_address->getAddress3()]));
-        $row['receiver']['name'] = $receiver_address->getCompanyName();
-        $row['receiver']['name_person'] = $receiver_address->getFirstName() . ' ' . $receiver_address->getLastName();
+        if($company = $receiver_address->getCompanyName()) {
+            $row['receiver']['name'] = $receiver_address->getCompanyName();
+            $row['receiver']['name_person'] = $receiver_address->getFirstName() . ' ' . $receiver_address->getLastName();
+        } else {
+            $row['receiver']['name'] = $receiver_address->getFirstName() . ' ' . $receiver_address->getLastName();
+        }
         $row['receiver']['email'] = $this->getOtherParameters('receiver_email');
         $row['receiver']['phone_num'] = $receiver_address->getPhone();
         $row['receiver']['sms_no'] = $this->getOtherParameters('sms_no');
@@ -110,7 +118,7 @@ class ShippingServicesRequest extends AbstractRequest
          */
         $row['shipment']['delivery_day'] = '';
 
-        $row['payment']['side'] = $this->getOtherParameters('side');
+        $row['payment']['side'] = $this->getPayer();
         $row['payment']['method'] = 'CASH';//$this->getOtherParameters('payment_method');
         $row['payment']['side'] = $this->getPayer();
         $row['payment']['key_word'] = $row['payment']['method'] == 'CREDIT' ? $this->getOtherParameters('key_word') : '';
