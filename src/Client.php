@@ -8,6 +8,7 @@
 
 namespace Omniship\Econt;
 
+use Carbon\Carbon;
 use DOMDocument;
 use Omniship\Econt\Lib\Response\CancelParcel;
 use Omniship\Econt\Lib\Response\City;
@@ -129,6 +130,8 @@ class Client
         $this->client_info = $post =  $this->post($this->getServiceEndpoint(), $this->_getRequestData('profile'));
         if (!empty($post->client_info)) {
             return new ClientInfo($post->client_info);
+        } elseif(!empty($post->error)) {
+            $this->error = (string)$post->error->message;
         }
         return false;
     }
@@ -317,20 +320,38 @@ class Client
      */
     public function trackParcel($parcelId)
     {
+        $tracking = $this->trackParcels([$parcelId]);
+        if(!empty($tracking[$parcelId])) {
+            return $tracking[$parcelId];
+        }
+        return false;
+    }
+
+    /**
+     * Get status for bill of landing's
+     * @param array $parcelIds
+     * @return Shipment[]
+     */
+    public function trackParcels(array $parcelIds)
+    {
         $trackRequest = [
             'shipments' => [
                 'type' => 'ON',
                 'value' => [
-                    'num' => $parcelId
+                    'num' => array_map('floatval', $parcelIds)
                 ]
             ]
         ];
 
+        $parcels = [];
         $post =  $this->post($this->getServiceEndpoint(), $this->_getRequestData('shipments', $trackRequest));
         if (!empty($post->shipments) && !empty($post->shipments->e)) {
-            return new Shipment($post->shipments->e);
+            foreach($post->shipments->e as $parcel) {
+                $parcel = new Shipment($parcel);
+                $parcels[(string)$parcel->getLoadingNum()] = $parcel;
+            }
         }
-        return false;
+        return $parcels;
     }
 
     /**
@@ -380,6 +401,21 @@ class Client
             }
         }
         return $parcels;
+    }
+
+    /**
+     * @param $username
+     * @param $password
+     * @return bool
+     */
+    public function validateCredentials($username, $password) {
+        $instance = new static($username, $password);
+        $instance->setTestMode($this->getTestMode());
+        $result = $instance->getClientInfo();
+        if(!$result) {
+            $this->error = $instance->getError();
+        }
+        return (bool)$result;
     }
 
     /**

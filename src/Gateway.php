@@ -13,6 +13,7 @@ use Omniship\Econt\Http\CreateBillOfLadingRequest;
 use Omniship\Econt\Http\ShippingServicesRequest;
 use Omniship\Econt\Http\TrackingParcelRequest;
 use Omniship\Common\AbstractGateway;
+use Omniship\Econt\Http\ValidateCredentialsRequest;
 
 class Gateway extends AbstractGateway
 {
@@ -117,6 +118,20 @@ class Gateway extends AbstractGateway
         $this->setBolId((float)$bol_id)->setCancelComment($cancelComment);
         return $this->createRequest(CancelBillOfLadingRequest::class, $this->getParameters());
     }
+
+    /**
+     * @param array $parameters
+     * @param null|bool $test_mode
+     *      if set null get mode from currently instance
+     * @return ValidateCredentialsRequest
+     */
+    public function validateCredentials(array $parameters = [], $test_mode = null) {
+        $instance = new Gateway();
+        $instance->initialize($parameters);
+        $instance->setTestMode(is_null($test_mode) ? $this->getTestMode() : (bool)$test_mode);
+        return $instance->createRequest(ValidateCredentialsRequest::class, $instance->getParameters());
+    }
+
     /**
      * Supports Cash On Delivery
      *
