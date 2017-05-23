@@ -24,8 +24,8 @@ class ShippingServicesRequest extends AbstractRequest
         $row = [];
         $from = $to = 'OFFICE';
         $sender_address = $this->getSenderAddress();
-        if($office_id = $sender_address->getParameter('office_id')) {
-            $row['sender']['office_code'] = $office_id;
+        if(!is_null($office = $sender_address->getOffice()) && $office->getId()) {
+            $row['sender']['office_code'] = $office->getId();
         } else {
             $from = 'DOOR';
         }
@@ -49,8 +49,8 @@ class ShippingServicesRequest extends AbstractRequest
         $row['sender']['phone_num'] = $sender_address->getPhone();
 
         $receiver_address = $this->getReceiverAddress();
-        if($office_id = $receiver_address->getParameter('office_id')) {
-            $row['receiver']['office_code'] = $office_id;
+        if(!is_null($office = $receiver_address->getOffice()) && $office->getId()) {
+            $row['receiver']['office_code'] = $office->getId();
         } else {
             $to = 'DOOR';
         }
