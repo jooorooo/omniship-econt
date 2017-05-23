@@ -11,7 +11,6 @@ namespace Omniship\Econt\Http;
 use Carbon\Carbon;
 use Omniship\Common\ShippingServiceBag;
 use Omniship\Econt\Lib\Response\Parcel;
-use Omniship\Message\AbstractResponse;
 
 class ShippingServicesResponse extends AbstractResponse
 {
@@ -47,32 +46,6 @@ class ShippingServicesResponse extends AbstractResponse
         ]);
 
         return $result;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getMessage()
-    {
-        if(is_string($this->data)) {
-            return str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data);
-        } elseif($this->data->getErrorCode() || $this->data->getError()) {
-            return str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data->getError());
-        }
-        return null;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getCode()
-    {
-        if(is_string($this->data)) {
-            return md5($this->data);
-        } elseif($this->data->getErrorCode() || $this->data->getError()) {
-            return $this->data->getErrorCode() ? : md5($this->data->getError());
-        }
-        return null;
     }
 
 }

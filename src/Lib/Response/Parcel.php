@@ -8,13 +8,14 @@
 
 namespace Omniship\Econt\Lib\Response;
 
+use Omniship\Econt\Lib\Interfaces\ErrorResponseInterface;
 use Omniship\Econt\Lib\Response\Parcel\LoadingDiscount;
 use Omniship\Econt\Lib\Response\Parcel\LoadingPrice;
 use Omniship\Interfaces\ArrayableInterface;
 use Omniship\Interfaces\JsonableInterface;
 use Omniship\Traits\Parameters;
 
-class Parcel implements ArrayableInterface, JsonableInterface
+class Parcel implements ArrayableInterface, JsonableInterface, ErrorResponseInterface
 {
 
     use Parameters;

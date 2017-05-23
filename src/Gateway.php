@@ -8,6 +8,7 @@
 
 namespace Omniship\Econt;
 
+use Omniship\Econt\Http\CancelBillOfLadingRequest;
 use Omniship\Econt\Http\CreateBillOfLadingRequest;
 use Omniship\Econt\Http\ShippingServicesRequest;
 use Omniship\Econt\Http\TrackingParcelRequest;

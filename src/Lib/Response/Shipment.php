@@ -8,12 +8,13 @@
 
 namespace Omniship\Econt\Lib\Response;
 
+use Omniship\Econt\Lib\Interfaces\ErrorResponseInterface;
 use Omniship\Econt\Lib\Response\Shipment\TrackBag;
 use Omniship\Interfaces\ArrayableInterface;
 use Omniship\Interfaces\JsonableInterface;
 use Omniship\Traits\Parameters;
 
-class Shipment implements ArrayableInterface, JsonableInterface
+class Shipment implements ArrayableInterface, JsonableInterface, ErrorResponseInterface
 {
 
     use Parameters;

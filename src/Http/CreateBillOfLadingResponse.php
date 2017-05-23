@@ -11,7 +11,6 @@ namespace Omniship\Econt\Http;
 use Carbon\Carbon;
 use Omniship\Common\Bill\Create;
 use Omniship\Econt\Lib\Response\Parcel;
-use Omniship\Message\AbstractResponse;
 
 class CreateBillOfLadingResponse extends AbstractResponse
 {

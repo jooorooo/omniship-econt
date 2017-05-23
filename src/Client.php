@@ -9,6 +9,7 @@
 namespace Omniship\Econt;
 
 use DOMDocument;
+use Omniship\Econt\Lib\Response\CancelParcel;
 use Omniship\Econt\Lib\Response\City;
 use Omniship\Econt\Lib\Response\Client\ClientAddressBag;
 use Omniship\Econt\Lib\Response\Client\ClientInfo;
@@ -357,6 +358,28 @@ class Client
     public function createBillOfLading(array $data)
     {
         return $this->calculate($data);
+    }
+
+    /**
+     * @param $bol_id
+     * @param null $cancelComment
+     * @return CancelParcel[]
+     */
+    public function cancelBol($bol_id, $cancelComment = null)
+    {
+        $parcels = [];
+        $data = [
+            'cancel_shipments' => [
+                'num' => array_map('floatval', (array)$bol_id)
+            ]
+        ];
+        $post =  $this->post($this->getServiceEndpoint(), $this->_getRequestData('cancel_shipments', $data));
+        if(!empty($post->cancel_shipments) && !empty($post->cancel_shipments->e)) {
+            foreach($post->cancel_shipments->e as $parcel) {
+                $parcels[(string)$parcel->num] = new CancelParcel($parcel);
+            }
+        }
+        return $parcels;
     }
 
     /**
