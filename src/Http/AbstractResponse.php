@@ -24,9 +24,9 @@ class AbstractResponse extends BaseAbstractResponse
     public function getMessage()
     {
         if(is_string($this->data)) {
-            return str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data);
+            return preg_replace('~([\s]{2,})~', ' ', str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data));
         } elseif($this->data instanceof ErrorResponseInterface && ($this->data->getErrorCode() || $this->data->getError())) {
-            return str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data->getError());
+            return preg_replace('~([\s]{2,})~', ' ', str_replace(["\n\r", "\r\n", "\r", "\n"], ' ', $this->data->getError()));
         } elseif(is_string($this->error)) {
             return $this->error;
         }
