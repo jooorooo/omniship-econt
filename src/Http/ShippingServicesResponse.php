@@ -42,7 +42,8 @@ class ShippingServicesResponse extends AbstractResponse
             'delivery_time' => null,
             'currency' => $this->data->getLoadingPrice()->getCurrency(),
             'tax' => 0,
-            'insurance' => 0
+            'insurance' => 0,
+            'exchange_rate' => null
         ]);
 
         return $result;

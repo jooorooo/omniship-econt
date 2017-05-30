@@ -125,7 +125,7 @@ class LoadingPrice implements ArrayableInterface, JsonableInterface
      */
     public function getCurrency()
     {
-        return $this->getParameter('currency');
+        return strtoupper($this->getParameter('currency'));
     }
 
     /**
@@ -134,7 +134,7 @@ class LoadingPrice implements ArrayableInterface, JsonableInterface
      */
     public function setCurrencyCode($currency_code)
     {
-        return $this->setParameter('currency_code', $currency_code);
+        return $this->setParameter('currency_code', strtoupper($currency_code));
     }
 
     /**
