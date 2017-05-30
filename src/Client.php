@@ -147,7 +147,7 @@ class Client
         $bag = new ClientAddressBag();
         if (!empty($this->client_info) && !empty($this->client_info->addresses)) {
             foreach($this->client_info->addresses->e AS $address) {
-                $bag->add($address);
+                $bag->push($address);
             }
         }
         return $bag;

@@ -1,24 +1,14 @@
 <?php
 /**
- * Shipping Event Bag
+ * Offices Bag
  */
 namespace Omniship\Econt\Lib\Response\City;
 
-use Omniship\Interfaces\ArrayableInterface;
-use Omniship\Interfaces\JsonableInterface;
 use SimpleXMLElement;
+use Omniship\Helper\Collection;
 
-class AttachOfficeBag implements \IteratorAggregate, \Countable, ArrayableInterface, \JsonSerializable, JsonableInterface
+class AttachOfficeBag extends Collection
 {
-    /**
-     * Event storage
-     *
-     * @see Event
-     *
-     * @var array
-     */
-    protected $offices;
-
     /**
      * Constructor
      *
@@ -27,117 +17,52 @@ class AttachOfficeBag implements \IteratorAggregate, \Countable, ArrayableInterf
     public function __construct($offices = array())
     {
         if($offices instanceof SimpleXMLElement) {
-            foreach ($offices->children() as $shipment_type) {
-                foreach ($shipment_type->children() as $delivery_type) {
-                    foreach ($delivery_type->office_code as $office_code) {
-                        $this->add([
+            $tmp = $offices;
+            $offices = [];
+            foreach ($tmp->children() as $shipment_type) {
+                /** @var $shipment SimpleXMLElement */
+                $shipment = $shipment_type;
+                foreach ($shipment->children() as $delivery_type) {
+                    /** @var $delivery SimpleXMLElement */
+                    $delivery = $delivery_type;
+                    foreach ($delivery->office_code as $office_code) {
+                        $offices[] = [
                             'office_code' => (string)$office_code,
-                            'shipment_type' => $shipment_type->getName(),
-                            'delivery_type' => $delivery_type->getName()
-                        ]);
+                            'shipment_type' => $shipment->getName(),
+                            'delivery_type' => $delivery->getName()
+                        ];
                     }
                 }
             }
-        } elseif(is_array($offices)) {
-            $this->replace($offices);
         }
+        $offices = array_map(function($office) {
+            return $office instanceof AttachOffice ? $office : new AttachOffice($office);
+        }, $offices);
+        parent::__construct($offices);
     }
 
     /**
-     * Return all the offices
+     * Set the item at a given offset.
      *
-     * @see Event
+     * @param  mixed  $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+        if(!($value instanceof AttachOffice)) {
+            $value = new AttachOffice($value);
+        }
+        parent::offsetSet($key, $value);
+    }
+
+    /**
+     * Get all of the items in the collection.
      *
      * @return AttachOffice[]
      */
     public function all()
     {
-        return $this->offices;
-    }
-
-    /**
-     * Replace the contents of this bag with the specified offices
-     *
-     * @see Event
-     *
-     * @param array $offices An array of offices
-     */
-    public function replace(array $offices = array())
-    {
-        $this->offices = array();
-        foreach ($offices as $office) {
-            $this->add($office);
-        }
-    }
-
-    /**
-     * Add an event to the bag
-     *
-     * @see Event
-     *
-     * @param AttachOffice|array $office An existing event, or associative array of event parameters
-     */
-    public function add($office)
-    {
-        if ($office instanceof AttachOffice) {
-            $this->offices[] = $office;
-        } else {
-            $this->offices[] = new AttachOffice($office);
-        }
-    }
-
-    /**
-     * Returns an iterator for offices
-     *
-     * @return \ArrayIterator An \ArrayIterator instance
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->offices);
-    }
-
-    /**
-     * Returns the number of offices
-     *
-     * @return int The number of offices
-     */
-    public function count()
-    {
-        return count($this->offices);
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $array = [];
-        foreach ($this->offices as $key => $value) {
-            if ($value instanceof ArrayableInterface) {
-                $array[$key] = $value->toArray();
-            } else {
-                $array[$key] = $value;
-            }
-        }
-        return $array;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * Convert the object to its JSON representation.
-     *
-     * @param  int  $options
-     * @return string
-     */
-    public function toJson($options = 0)
-    {
-        return json_encode($this->jsonSerialize(), $options);
+        return parent::all();
     }
 }

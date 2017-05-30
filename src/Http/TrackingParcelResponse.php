@@ -38,7 +38,7 @@ class TrackingParcelResponse extends AbstractResponse
             if(!$row && $quote->getEvent() == 'office') {
                 $quote->setEvent('sender_office');
             }
-            $result->add([
+            $result->push([
                 'id' => md5($quote->getTime()),
                 'name' => $quote->getName(),
                 'events' => $this->_getEvents($quote),
@@ -61,7 +61,7 @@ class TrackingParcelResponse extends AbstractResponse
     {
         $result = new EventBag();
         if($data->getEvent()) {
-            $result->add(new Component([
+            $result->push(new Component([
                 'id' => $data->getEvent(),
                 'name' => $data->getName(),
             ]));

@@ -31,7 +31,7 @@ class ShippingServicesResponse extends AbstractResponse
             return $result;
         }
         
-        $result->add([
+        $result->push([
             'id' => md5($this->data->getDeliveryDate()),
             'name' => null,
             'description' => null,

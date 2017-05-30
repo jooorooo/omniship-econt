@@ -8,11 +8,10 @@
 
 namespace Omniship\Econt\Lib\Response\Client;
 
-use Omniship\Interfaces\ArrayableInterface;
-use Omniship\Interfaces\JsonableInterface;
 use SimpleXMLElement;
+use Omniship\Helper\Collection;
 
-class InstructionBag implements \IteratorAggregate, \Countable, ArrayableInterface, \JsonSerializable, JsonableInterface
+class InstructionBag extends Collection
 {
     /**
      * Event storage
@@ -30,113 +29,45 @@ class InstructionBag implements \IteratorAggregate, \Countable, ArrayableInterfa
      */
     public function __construct($instructions = array())
     {
-        if($instructions instanceof \SimpleXMLElement) {
+        if ($instructions instanceof SimpleXMLElement) {
             $temporary = [];
-            if($instructions->children()->count()) {
+            if ($instructions->children()->count()) {
                 foreach ($instructions AS $cd) {
                     $temporary[] = $cd;
                 }
             }
             $instructions = $temporary;
         }
-        $this->replace($instructions);
+
+        $instructions = array_map(function ($item) {
+            return !($item instanceof Instruction) ? new Instruction($item) : $item;
+        }, $instructions);
+
+        parent::__construct($instructions);
     }
 
     /**
-     * Return all the instructions
+     * Set the item at a given offset.
      *
-     * @see Event
+     * @param  mixed $key
+     * @param  mixed $value
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+        if (!($value instanceof Instruction)) {
+            $value = new Instruction($value);
+        }
+        parent::offsetSet($key, $value);
+    }
+
+    /**
+     * Get all of the items in the collection.
      *
      * @return Instruction[]
      */
     public function all()
     {
-        return $this->instructions;
-    }
-
-    /**
-     * Replace the contents of this bag with the specified instructions
-     *
-     * @see Event
-     *
-     * @param array $instructions An array of instructions
-     */
-    public function replace(array $instructions = array())
-    {
-        $this->instructions = array();
-        foreach ($instructions as $instruction) {
-            $this->add($instruction);
-        }
-    }
-
-    /**
-     * Add an event to the bag
-     *
-     * @see Event
-     *
-     * @param Instruction|array $instruction An existing event, or associative array of event parameters
-     */
-    public function add($instruction)
-    {
-        if ($instruction instanceof Instruction) {
-            $this->instructions[] = $instruction;
-        } else {
-            $this->instructions[] = new Instruction($instruction);
-        }
-    }
-
-    /**
-     * Returns an iterator for instructions
-     *
-     * @return \ArrayIterator An \ArrayIterator instance
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->instructions);
-    }
-
-    /**
-     * Returns the number of instructions
-     *
-     * @return int The number of instructions
-     */
-    public function count()
-    {
-        return count($this->instructions);
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $array = [];
-        foreach ($this->instructions as $key => $value) {
-            if ($value instanceof ArrayableInterface) {
-                $array[$key] = $value->toArray();
-            } else {
-                $array[$key] = $value;
-            }
-        }
-        return $array;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * Convert the object to its JSON representation.
-     *
-     * @param  int  $options
-     * @return string
-     */
-    public function toJson($options = 0)
-    {
-        return json_encode($this->jsonSerialize(), $options);
+        return parent::all();
     }
 }

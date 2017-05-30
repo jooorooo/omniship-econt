@@ -79,7 +79,7 @@ class ShippingServicesRequest extends AbstractRequest
         $row['shipment']['envelope_num'] = '';
         /** @var $items ItemBag */
         $items = $this->getItems();
-        if($items && $items->count()) {
+        if($items->count()) {
             $description = [];
             foreach($items->all() AS $item) {
                 $description[] = $item->getName();

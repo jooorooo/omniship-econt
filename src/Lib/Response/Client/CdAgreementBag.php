@@ -8,19 +8,11 @@
 
 namespace Omniship\Econt\Lib\Response\Client;
 
-use Omniship\Interfaces\ArrayableInterface;
-use Omniship\Interfaces\JsonableInterface;
+use SimpleXMLElement;
+use Omniship\Helper\Collection;
 
-class CdAgreementBag implements \IteratorAggregate, \Countable, ArrayableInterface, \JsonSerializable, JsonableInterface
+class CdAgreementBag extends Collection
 {
-    /**
-     * Event storage
-     *
-     * @see Event
-     *
-     * @var array
-     */
-    protected $agreements;
 
     /**
      * Constructor
@@ -29,7 +21,7 @@ class CdAgreementBag implements \IteratorAggregate, \Countable, ArrayableInterfa
      */
     public function __construct($agreements = array())
     {
-        if($agreements instanceof \SimpleXMLElement) {
+        if($agreements instanceof SimpleXMLElement) {
             $temporary = [];
             if($agreements->children()->count()) {
                 foreach ($agreements AS $cd) {
@@ -38,104 +30,36 @@ class CdAgreementBag implements \IteratorAggregate, \Countable, ArrayableInterfa
             }
             $agreements = $temporary;
         }
-        $this->replace($agreements);
+
+        $agreements = array_map(function($item) {
+            return !($item instanceof CdAgreement) ? new CdAgreement($item) : $item;
+        }, $agreements);
+
+        parent::__construct($agreements);
     }
 
     /**
-     * Return all the agreements
+     * Set the item at a given offset.
      *
-     * @see Event
+     * @param  mixed  $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+        if(!($value instanceof CdAgreement)) {
+            $value = new CdAgreement($value);
+        }
+        parent::offsetSet($key, $value);
+    }
+
+    /**
+     * Get all of the items in the collection.
      *
      * @return CdAgreement[]
      */
     public function all()
     {
-        return $this->agreements;
-    }
-
-    /**
-     * Replace the contents of this bag with the specified agreements
-     *
-     * @see Event
-     *
-     * @param array $agreements An array of agreements
-     */
-    public function replace(array $agreements = array())
-    {
-        $this->agreements = array();
-        foreach ($agreements as $agreement) {
-            $this->add($agreement);
-        }
-    }
-
-    /**
-     * Add an event to the bag
-     *
-     * @see Event
-     *
-     * @param CdAgreement|array $agreement An existing event, or associative array of event parameters
-     */
-    public function add($agreement)
-    {
-        if ($agreement instanceof CdAgreement) {
-            $this->agreements[] = $agreement;
-        } else {
-            $this->agreements[] = new CdAgreement($agreement);
-        }
-    }
-
-    /**
-     * Returns an iterator for agreements
-     *
-     * @return \ArrayIterator An \ArrayIterator instance
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->agreements);
-    }
-
-    /**
-     * Returns the number of agreements
-     *
-     * @return int The number of agreements
-     */
-    public function count()
-    {
-        return count($this->agreements);
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $array = [];
-        foreach ($this->agreements as $key => $value) {
-            if ($value instanceof ArrayableInterface) {
-                $array[$key] = $value->toArray();
-            } else {
-                $array[$key] = $value;
-            }
-        }
-        return $array;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * Convert the object to its JSON representation.
-     *
-     * @param  int  $options
-     * @return string
-     */
-    public function toJson($options = 0)
-    {
-        return json_encode($this->jsonSerialize(), $options);
+        return parent::all();
     }
 }

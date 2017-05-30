@@ -8,125 +8,46 @@
 
 namespace Omniship\Econt\Lib\Response\Client;
 
-use Omniship\Interfaces\ArrayableInterface;
-use Omniship\Interfaces\JsonableInterface;
+use Omniship\Helper\Collection;
 
-class ClientAddressBag implements \IteratorAggregate, \Countable, ArrayableInterface, \JsonSerializable, JsonableInterface
+class ClientAddressBag extends Collection
 {
-    /**
-     * Event storage
-     *
-     * @see Event
-     *
-     * @var array
-     */
-    protected $addresses;
 
     /**
-     * Constructor
+     * Create a new collection.
      *
-     * @param array $addresses An array of addresses
+     * @param  mixed  $items
      */
-    public function __construct($addresses = array())
+    public function __construct($items = [])
     {
-        $this->replace($addresses);
+        $items = array_map(function($item) {
+            return !($item instanceof ClientAddress) ? new ClientAddress($item) : $item;
+        }, $items);
+        parent::__construct($items);
     }
 
     /**
-     * Return all the addresses
+     * Set the item at a given offset.
      *
-     * @see Event
+     * @param  mixed  $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+        if(!($value instanceof ClientAddress)) {
+            $value = new ClientAddress($value);
+        }
+        parent::offsetSet($key, $value);
+    }
+
+    /**
+     * Get all of the items in the collection.
      *
      * @return ClientAddress[]
      */
     public function all()
     {
-        return $this->addresses;
-    }
-
-    /**
-     * Replace the contents of this bag with the specified addresses
-     *
-     * @see Event
-     *
-     * @param array $addresses An array of addresses
-     */
-    public function replace(array $addresses = array())
-    {
-        $this->addresses = array();
-        foreach ($addresses as $address) {
-            $this->add($address);
-        }
-    }
-
-    /**
-     * Add an event to the bag
-     *
-     * @see Event
-     *
-     * @param ClientAddress|array $address An existing event, or associative array of event parameters
-     */
-    public function add($address)
-    {
-        if ($address instanceof ClientAddress) {
-            $this->addresses[] = $address;
-        } else {
-            $this->addresses[] = new ClientAddress($address);
-        }
-    }
-
-    /**
-     * Returns an iterator for addresses
-     *
-     * @return \ArrayIterator An \ArrayIterator instance
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->addresses);
-    }
-
-    /**
-     * Returns the number of addresses
-     *
-     * @return int The number of addresses
-     */
-    public function count()
-    {
-        return count($this->addresses);
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $array = [];
-        foreach ($this->addresses as $key => $value) {
-            if ($value instanceof ArrayableInterface) {
-                $array[$key] = $value->toArray();
-            } else {
-                $array[$key] = $value;
-            }
-        }
-        return $array;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * Convert the object to its JSON representation.
-     *
-     * @param  int  $options
-     * @return string
-     */
-    public function toJson($options = 0)
-    {
-        return json_encode($this->jsonSerialize(), $options);
+        return parent::all();
     }
 }
