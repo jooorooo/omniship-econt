@@ -121,7 +121,7 @@ class ShippingServicesRequest extends AbstractRequest
         $row['payment']['side'] = $this->getPayer();
         $row['payment']['method'] = 'CASH';//$this->getOtherParameters('payment_method');
         $row['payment']['side'] = $this->getPayer();
-        $row['payment']['key_word'] = $row['payment']['method'] == 'CREDIT' ? $this->getOtherParameters('key_word') : '';
+        $row['payment']['key_word'] = $row['payment']['method'] == 'CREDIT' ? $this->getOtherParameters('credit_account_number') : '';
 
         $row['services']['e'] = '';
         $row['services']['dc'] = $this->getOtherParameters('dc') ? 'On' : ''; //обратна разписка;
@@ -138,7 +138,7 @@ class ShippingServicesRequest extends AbstractRequest
         if($cd = $this->getCashOnDeliveryAmount()) {
             $row['services']['cd'] = array('type' => 'GET', 'value' => $cd);
             $row['services']['cd_currency'] = $this->getCashOnDeliveryCurrency();
-            $row['services']['cd_agreement_num'] = $this->getOtherParameters('cd_agreement_num');
+            $row['services']['cd_agreement_num'] = $this->getOtherParameters('cod_account_number');
         } else {
             $row['services']['cd'] = array('type' => '', 'value' => '');
             $row['services']['cd_currency'] = '';
