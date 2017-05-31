@@ -425,14 +425,15 @@ class Client
      */
     public function post($url, $data = [])
     {
-        $dom = $this->xmlToDom($data);
-        if(!$dom) {
+        $document = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . (is_array($data) ? $this->prepareXML($data) : $data);
+        if(!$this->isXMLContentValid($document)) {
             return false;
         }
+
         $client = new HttpClient();
         $httpRequest = $client->post($url, array(
             'form_params' => [
-                'xml' => $dom->saveXML()
+                'xml' => $document
             ]
         ));
 

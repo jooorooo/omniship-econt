@@ -8,6 +8,7 @@
 
 namespace Omniship\Econt\Http;
 
+use Omniship\Common\Address;
 use Omniship\Common\ItemBag;
 
 class ShippingServicesRequest extends AbstractRequest
@@ -15,7 +16,8 @@ class ShippingServicesRequest extends AbstractRequest
     /**
      * @return array
      */
-    public function getData() {
+    public function getData()
+    {
         $data = [];
         $data['system']['validate'] = 1;
         $data['system']['response_type'] = 'XML';
@@ -23,73 +25,40 @@ class ShippingServicesRequest extends AbstractRequest
 
         $row = [];
         $from = $to = 'OFFICE';
+
+        //from address
         $sender_address = $this->getSenderAddress();
-        if(!is_null($office = $sender_address->getOffice()) && $office->getId()) {
-            $row['sender']['office_code'] = $office->getId();
-        } else {
+        $row['sender'] = $this->formatAddress($sender_address);
+        if (empty($row['sender']['office_code'])) {
             $from = 'DOOR';
         }
-        $row['sender']['country_code'] = $sender_address->getCountry()->getIso3();
-        $row['sender']['city'] = $sender_address->getCity()->getName();
-        $row['sender']['post_code'] = $sender_address->getPostCode();
-        $row['sender']['quarter'] = $sender_address->getParameter('quarter');
-        $row['sender']['street'] = $sender_address->getParameter('street');
-        $row['sender']['street_num'] = $sender_address->getParameter('street_num');
-        $row['sender']['street_bl'] = '';
-        $row['sender']['street_vh'] = '';
-        $row['sender']['street_et'] = '';
-        $row['sender']['street_ap'] = '';
-        $row['sender']['street_other'] = implode(' ', array_filter([$sender_address->getAddress1(), $sender_address->getAddress2(), $sender_address->getAddress3()]));
-        if($company = $sender_address->getCompanyName()) {
-            $row['sender']['name'] = $company;
-            $row['sender']['name_person'] = $sender_address->getFirstName() . ' ' . $sender_address->getLastName();
-        } else {
-            $row['sender']['name'] = $sender_address->getFirstName() . ' ' . $sender_address->getLastName();
-        }
-        $row['sender']['phone_num'] = $sender_address->getPhone();
 
+        //to address
         $receiver_address = $this->getReceiverAddress();
-        if(!is_null($office = $receiver_address->getOffice()) && $office->getId()) {
-            $row['receiver']['office_code'] = $office->getId();
-        } else {
+        $row['receiver'] = $this->formatAddress($receiver_address);
+        if (empty($row['receiver']['office_code'])) {
             $to = 'DOOR';
         }
-        $row['receiver']['country_code'] = $receiver_address->getCountry()->getIso3();
-        $row['receiver']['city'] = $receiver_address->getCity()->getName();
-        $row['receiver']['post_code'] = $receiver_address->getPostCode();
-        $row['receiver']['address_zip'] = $receiver_address->getPostCode();
-        $row['receiver']['quarter'] = $receiver_address->getParameter('quarter');
-        $row['receiver']['street'] = $receiver_address->getParameter('street');
-        $row['receiver']['street_num'] = $receiver_address->getParameter('street_num');
-        $row['receiver']['street_bl'] = '';
-        $row['receiver']['street_vh'] = '';
-        $row['receiver']['street_et'] = '';
-        $row['receiver']['street_ap'] = '';
-        $row['receiver']['street_other'] = implode(' ', array_filter([$receiver_address->getAddress1(), $receiver_address->getAddress2(), $receiver_address->getAddress3()]));
-        if($company = $receiver_address->getCompanyName()) {
-            $row['receiver']['name'] = $receiver_address->getCompanyName();
-            $row['receiver']['name_person'] = $receiver_address->getFirstName() . ' ' . $receiver_address->getLastName();
-        } else {
-            $row['receiver']['name'] = $receiver_address->getFirstName() . ' ' . $receiver_address->getLastName();
-        }
+
         $row['receiver']['email'] = $this->getOtherParameters('receiver_email');
-        $row['receiver']['phone_num'] = $receiver_address->getPhone();
         $row['receiver']['sms_no'] = $this->getOtherParameters('sms_no');
 
-        $row['shipment']['envelope_num'] = '';
-        /** @var $items ItemBag */
-        $items = $this->getItems();
-        if($items->count()) {
-            $description = [];
-            foreach($items->all() AS $item) {
-                $description[] = $item->getName();
-            }
-            $row['shipment']['description'] = implode(', ', $description);
-            $row['shipment']['pack_count'] = $items->count();
-        } else {
-            $row['shipment']['pack_count'] = 0;
-        }
-        $row['shipment']['weight'] = $weight = $this->getWeight();
+        $row['shipment']['envelope_num'] = $this->getPackageType();
+//        /** @var $items ItemBag */
+//        $items = $this->getItems();
+//        if($items->count()) {
+//            $description = [];
+//            foreach($items->all() AS $item) {
+//                $description[] = $item->getName();
+//            }
+//            $row['shipment']['description'] = implode(', ', $description);
+//            $row['shipment']['pack_count'] = $items->count();
+//        } else {
+//            $row['shipment']['pack_count'] = 0;
+//        }
+        $row['shipment']['description'] = $this->getContent();
+        $row['shipment']['pack_count'] = $this->getNumberOfPieces();
+        $row['shipment']['weight'] = $this->getWeight();
 
         /*
          * shipment_type – тип на пратката. Възможни стойности за куриерски пратки :
@@ -99,7 +68,7 @@ class ShippingServicesRequest extends AbstractRequest
          * колет, PRESS – печатни произведения, ADV – пряка пощенска реклама, SECOGRAM – секограма;
          * MONEY_TRANSFER – паричен превод;
          */
-        if ($weight > 100) {
+        if ($row['shipment']['weight'] > 100) {
             $row['shipment']['shipment_type'] = 'CARGO';
             $row['shipment']['cargo_code'] = 81;
         } else {
@@ -109,7 +78,12 @@ class ShippingServicesRequest extends AbstractRequest
         $row['shipment']['invoice_before_pay_CD'] = (int)$this->getOtherParameters('invoice_before_cd');
         $row['shipment']['pay_after_accept'] = (int)$this->getOtherParameters('pay_after_accept');
         $row['shipment']['pay_after_test'] = (int)$this->getOtherParameters('pay_after_test');
-        $row['shipment']['instruction_returns'] = $this->getOtherParameters('instruction_returns') ? 'shipping_returns' : ($this->getOtherParameters('returns') ? 'returns' : '');
+        if ($row['shipment']['pay_after_accept']) {
+            //ако клиента откаже пратката как да се поемат разноските по пратката. Възможни стойности: shipping_returns - доставката и връщането да са за моя сметка да са за сметка на подателя; returns – само връщането да е за сметка на подателя
+            $row['shipment']['instruction_returns'] = $this->getOtherParameters('instruction_returns');
+        } else {
+            $row['shipment']['instruction_returns'] = '';
+        }
         /*
          * delivery_day – Дата за доставка на пратката - възможните стойности са:
          * - work_day – първия работен ден, half_day – първия работен ден или ден с дежурства;
@@ -118,7 +92,7 @@ class ShippingServicesRequest extends AbstractRequest
          */
         $row['shipment']['delivery_day'] = '';
 
-        $row['payment']['side'] = $this->getPayer();
+        //@todo CASH, CREDIT, BONUS (бонус точки), VOUCHE (ваучери)
         $row['payment']['method'] = 'CASH';//$this->getOtherParameters('payment_method');
         $row['payment']['side'] = $this->getPayer();
         $row['payment']['key_word'] = $row['payment']['method'] == 'CREDIT' ? $this->getOtherParameters('credit_account_number') : '';
@@ -127,7 +101,7 @@ class ShippingServicesRequest extends AbstractRequest
         $row['services']['dc'] = $this->getOtherParameters('dc') ? 'On' : ''; //обратна разписка;
         $row['services']['dc_cp'] = $this->getOtherParameters('dc_cp') ? 'On' : ''; // стокова разписка;
 
-        if($oc = $this->getDeclaredAmount()) {
+        if ($oc = $this->getDeclaredAmount()) {
             $row['services']['oc'] = $this->getDeclaredAmount();
             $row['services']['oc_currency'] = $this->getDeclaredCurrency();
         } else {
@@ -135,10 +109,10 @@ class ShippingServicesRequest extends AbstractRequest
             $row['services']['oc_currency'] = '';
         }
 
-        if($cd = $this->getCashOnDeliveryAmount()) {
+        if ($cd = $this->getCashOnDeliveryAmount()) {
             $row['services']['cd'] = array('type' => 'GET', 'value' => $cd);
             $row['services']['cd_currency'] = $this->getCashOnDeliveryCurrency();
-            $row['services']['cd_agreement_num'] = $this->getOtherParameters('cod_account_number');
+            $row['services']['cd_agreement_num'] = $this->getOtherParameters('cod_account_number') ?: '';
         } else {
             $row['services']['cd'] = array('type' => '', 'value' => '');
             $row['services']['cd_currency'] = '';
@@ -180,7 +154,8 @@ class ShippingServicesRequest extends AbstractRequest
         return $data;
     }
 
-    public function sendData($data) {
+    public function sendData($data)
+    {
         $tracking = $this->getClient()->calculate($data);
         return $this->createResponse($tracking ? $tracking : $this->getClient()->getError());
     }
@@ -192,6 +167,56 @@ class ShippingServicesRequest extends AbstractRequest
     protected function createResponse($data)
     {
         return $this->response = new ShippingServicesResponse($this, $data);
+    }
+
+    /**
+     * @param Address|null $address
+     * @return array
+     */
+    protected function formatAddress(Address $address = null)
+    {
+        $row = [];
+        if ($address) {
+            if (!is_null($office = $address->getOffice()) && $office->getId()) {
+                $row['office_code'] = $office->getId();
+            }
+            if (!is_null($country = $address->getCountry())) {
+                $row['country_code'] = $country->getIso3();
+            }
+            if (!is_null($city = $address->getCity())) {
+                $row['city'] = $city->getName();
+            } else {
+                $row['city'] = '';
+            }
+            if (!is_null($quarter = $address->getQuarter())) {
+                $row['quarter'] = $quarter->getId();
+            } else {
+                $row['quarter'] = '';
+            }
+            if (!is_null($street = $address->getStreet())) {
+                $row['street'] = $street->getId();
+            } else {
+                $row['street'] = '';
+            }
+
+            $row['post_code'] = $address->getPostCode();
+            $row['address_zip'] = $address->getPostCode();
+            $row['street_num'] = $address->getStreetNumber();
+            $row['street_bl'] = $address->getBuilding();
+            $row['street_vh'] = $address->getEntrance();
+            $row['street_et'] = $address->getFloor();
+            $row['street_ap'] = $address->getApartment();
+            $row['street_other'] = implode(' ', array_filter([$address->getAddress1(), $address->getAddress2(), $address->getAddress3()]));
+            if ($company = $address->getCompanyName()) {
+                $row['name'] = $address->getCompanyName();
+                $row['name_person'] = $address->getFirstName() . ' ' . $address->getLastName();
+            } else {
+                $row['name'] = $address->getFirstName() . ' ' . $address->getLastName();
+            }
+            $row['phone_num'] = $address->getPhone();
+        }
+
+        return $row;
     }
 
 }
