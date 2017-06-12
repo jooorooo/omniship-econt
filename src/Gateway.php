@@ -9,6 +9,7 @@
 namespace Omniship\Econt;
 
 use Omniship\Econt\Http\CancelBillOfLadingRequest;
+use Omniship\Econt\Http\CodPaymentRequest;
 use Omniship\Econt\Http\CreateBillOfLadingRequest;
 use Omniship\Econt\Http\ShippingServicesRequest;
 use Omniship\Econt\Http\TrackingParcelRequest;
@@ -107,6 +108,25 @@ class Gateway extends AbstractGateway
      */
     public function createBillOfLading(array $parameters = []) {
         return $this->createRequest(CreateBillOfLadingRequest::class, $this->getParameters() + $parameters);
+    }
+
+//    /**
+//     * @param $bol_id
+//     * @param null|Carbon $date
+//     * @return RequestCourierRequest
+//     */
+//    public function requestCourier($bol_id, Carbon $date = null)
+//    {
+//        return $this->createRequest(RequestCourierRequest::class, $this->setBolId(array_map('floatval', (array)$bol_id))->setDate($date)->getParameters());
+//    }
+
+    /**
+     * @param $bol_id
+     * @return CodPaymentRequest
+     */
+    public function codPayment($bol_id)
+    {
+        return $this->createRequest(CodPaymentRequest::class, $this->setBolId($bol_id)->getParameters());
     }
 
     /**

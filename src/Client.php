@@ -14,6 +14,7 @@ use Omniship\Econt\Lib\Response\CancelParcel;
 use Omniship\Econt\Lib\Response\City;
 use Omniship\Econt\Lib\Response\Client\ClientAddressBag;
 use Omniship\Econt\Lib\Response\Client\ClientInfo;
+use Omniship\Econt\Lib\Response\CodPayment;
 use Omniship\Econt\Lib\Response\Country;
 use Omniship\Econt\Lib\Response\Office\Office;
 use Omniship\Econt\Lib\Response\PostBox;
@@ -382,6 +383,20 @@ class Client
     }
 
     /**
+     * Get status for bill of landing
+     * @param $parcelId
+     * @return null|CodPayment
+     */
+    public function codPayment($parcelId)
+    {
+        $tracking = $this->trackParcel($parcelId);
+        if(!$tracking) {
+            return null;
+        }
+        return new CodPayment($tracking->toArray());
+    }
+
+    /**
      * @param $bol_id
      * @param null $cancelComment
      * @return CancelParcel[]
@@ -443,6 +458,12 @@ class Client
 
         if(!$body = $httpRequest->getBody()->getContents()) {
             return !($this->error = 'Return empty response');
+        }
+
+        //@todo econt api fix (<b>Warning</b>:  Invalid argument supplied for foreach() in <b>/www/e-econt/include/classes/DBLoadings.class.php</b> on line <b>982</b><br />)
+        if(strpos($body, '<?xml ') > 0) {
+            $parts = explode('<?xml ', $body, 2);
+            $body = '<?xml ' . end($parts);
         }
 
         if(!$this->isXMLContentValid($body)) {

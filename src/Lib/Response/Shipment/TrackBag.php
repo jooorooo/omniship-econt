@@ -33,7 +33,7 @@ class TrackBag extends Collection
 
         $tracks = array_map(function($item) {
             return !($item instanceof Track) ? new Track($item) : $item;
-        }, $tracks);
+        }, is_null($tracks) ? [] : $tracks);
 
         parent::__construct($tracks);
     }
