@@ -419,6 +419,19 @@ class Client
     }
 
     /**
+     * Get multiple status for bill of landing
+     * @param $parcelId
+     * @return CodPayment[]
+     */
+    public function codPayments(array $parcelId)
+    {
+        $trackings = $this->trackParcels($parcelId);
+        return array_map(function(Shipment $tracking) {
+            return new CodPayment($tracking->toArray());
+        }, $trackings);
+    }
+
+    /**
      * @param $username
      * @param $password
      * @return bool
