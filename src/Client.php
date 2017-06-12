@@ -383,20 +383,6 @@ class Client
     }
 
     /**
-     * Get status for bill of landing
-     * @param $parcelId
-     * @return null|CodPayment
-     */
-    public function codPayment($parcelId)
-    {
-        $tracking = $this->trackParcel($parcelId);
-        if(!$tracking) {
-            return null;
-        }
-        return new CodPayment($tracking->toArray());
-    }
-
-    /**
      * @param $bol_id
      * @param null $cancelComment
      * @return CancelParcel[]
@@ -416,6 +402,20 @@ class Client
             }
         }
         return $parcels;
+    }
+
+    /**
+     * Get status for bill of landing
+     * @param $parcelId
+     * @return null|CodPayment
+     */
+    public function codPayment($parcelId)
+    {
+        $tracking = $this->trackParcel($parcelId);
+        if(!$tracking) {
+            return null;
+        }
+        return new CodPayment($tracking->toArray());
     }
 
     /**
