@@ -42,7 +42,7 @@ class TrackingParcelResponse extends AbstractResponse
                 'id' => md5($quote->getTime()),
                 'name' => $quote->getName(),
                 'events' => $this->_getEvents($quote),
-                'shipment_date' => Carbon::createFromFormat('Y-m-d H:i:s', $quote->getEvnTime(), $this->getRequest()->getReceiverTimeZone()),
+                'shipment_date' => $quote->getEvnTime() ? Carbon::createFromFormat('Y-m-d H:i:s', $quote->getEvnTime(), $this->getRequest()->getReceiverTimeZone()) : Carbon::createFromFormat('Y-m-d H:i', $quote->getTime(), $this->getRequest()->getReceiverTimeZone()),
                 'estimated_delivery_date' => Carbon::createFromFormat('Y-m-d', (string)$this->data->getExpectedDeliveryDay(), $this->getRequest()->getReceiverTimeZone()),
                 'origin_service_area' => null,
                 'destination_service_area' => new Component(['id' => md5(json_encode($quote->getName())), 'name' => $quote->getName()]),

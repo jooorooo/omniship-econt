@@ -9,7 +9,8 @@
 namespace Omniship\Econt\Http;
 
 use Omniship\Common\Address;
-use Omniship\Common\ItemBag;
+use Omniship\Consts;
+use Omniship\Econt\Helper\Convert;
 
 class ShippingServicesRequest extends AbstractRequest
 {
@@ -18,6 +19,9 @@ class ShippingServicesRequest extends AbstractRequest
      */
     public function getData()
     {
+
+        $convert = new Convert();
+
         $data = [];
         $data['system']['validate'] = 1;
         $data['system']['response_type'] = 'XML';
@@ -40,7 +44,7 @@ class ShippingServicesRequest extends AbstractRequest
             $to = 'DOOR';
         }
 
-        $row['receiver']['email'] = $this->getOtherParameters('receiver_email');
+        $row['receiver']['email'] = $this->getReceiverEmail();
         $row['receiver']['sms_no'] = $this->getOtherParameters('sms_no');
 
         $row['shipment']['envelope_num'] = $this->getPackageType();
@@ -58,32 +62,35 @@ class ShippingServicesRequest extends AbstractRequest
 //        }
         $row['shipment']['description'] = $this->getContent();
         $row['shipment']['pack_count'] = $this->getNumberOfPieces();
-        $row['shipment']['weight'] = $this->getWeight();
-
-        /*
-         * shipment_type – тип на пратката. Възможни стойности за куриерски пратки :
-         * PACK – колет, DOCUMENT - документи, PALLET – палет, CARGO – карго експрес, DOCUMENTPALLET –
-         * палет + документи ;
-         * За пощенски пратки:  SMALL_ENVELOPE – малко писмо, BIG_ENVELOPE – голямо писмо, POST_PACK -
-         * колет, PRESS – печатни произведения, ADV – пряка пощенска реклама, SECOGRAM – секограма;
-         * MONEY_TRANSFER – паричен превод;
-         */
-        if ($row['shipment']['weight'] > 100) {
-            $row['shipment']['shipment_type'] = 'CARGO';
-            $row['shipment']['cargo_code'] = 81;
-        } else {
-            $row['shipment']['shipment_type'] = 'PACK';
-        }
+        $row['shipment']['weight'] = $convert->convertWeightUnit($this->getWeight(), $this->getWeightUnit());
 
         $row['shipment']['invoice_before_pay_CD'] = (int)$this->getOtherParameters('invoice_before_cd');
-        $row['shipment']['pay_after_accept'] = (int)$this->getOtherParameters('pay_after_accept');
-        $row['shipment']['pay_after_test'] = (int)$this->getOtherParameters('pay_after_test');
-        if ($row['shipment']['pay_after_accept']) {
-            //ако клиента откаже пратката как да се поемат разноските по пратката. Възможни стойности: shipping_returns - доставката и връщането да са за моя сметка да са за сметка на подателя; returns – само връщането да е за сметка на подателя
-            $row['shipment']['instruction_returns'] = $this->getOtherParameters('instruction_returns');
-        } else {
-            $row['shipment']['instruction_returns'] = '';
+        $row['shipment']['pay_after_accept'] = (int)($this->getOptionBeforePayment() == Consts::OPTION_BEFORE_PAYMENT_OPEN);
+        $row['shipment']['pay_after_test'] = (int)($this->getOptionBeforePayment() == Consts::OPTION_BEFORE_PAYMENT_TEST);
+
+        //ако клиента откаже пратката как да се поемат разноските по пратката. Възможни стойности: delivery_return - доставката и връщането да са за моя сметка да са за сметка на подателя; return – само връщането да е за сметка на подателя
+        $row['instructions'] = [];
+        if($row['shipment']['pay_after_accept']) {
+            $row['instructions'][0]['e']['type'] = 'return';
+            $row['instructions'][0]['e']['delivery_fail_action'] = 'return_to_sender';
+            $row['instructions'][0]['e']['reject_delivery_payment_side'] = 'receiver';
+            $row['instructions'][0]['e']['reject_return_payment_side'] = 'receiver';
+            if ($this->getOtherParameters('instruction_returns') == 'delivery_return') {
+                $row['instructions'][0]['e']['reject_delivery_payment_side'] = 'sender';
+                $row['instructions'][0]['e']['reject_return_payment_side'] = 'sender';
+            } else if ($this->getOtherParameters('instruction_returns') == 'return') {
+                $row['instructions'][0]['e']['reject_return_payment_side'] = 'sender';
+            }
         }
+
+        $instructions = $this->getOtherParameters('instructions');
+        if($instructions) {
+            $total_instructions = count($row['instructions']);
+            foreach($instructions AS $row => $instruction) {
+                $row['instructions'][$total_instructions++]['e'] = $instruction;
+            }
+        }
+
         /*
          * delivery_day – Дата за доставка на пратката - възможните стойности са:
          * - work_day – първия работен ден, half_day – първия работен ден или ден с дежурства;
@@ -98,12 +105,15 @@ class ShippingServicesRequest extends AbstractRequest
         $row['payment']['key_word'] = $row['payment']['method'] == 'CREDIT' ? $this->getOtherParameters('credit_account_number') : '';
 
         $row['services']['e'] = '';
-        $row['services']['dc'] = $this->getOtherParameters('dc') ? 'On' : ''; //обратна разписка;
-        $row['services']['dc_cp'] = $this->getOtherParameters('dc_cp') ? 'On' : ''; // стокова разписка;
+        $row['services']['dc'] = $this->getBackReceipt() ? 'On' : ''; //обратна разписка;
+        $row['services']['dc_cp'] = $this->getBackDocuments() ? 'On' : ''; // стокова разписка;
 
         if ($oc = $this->getDeclaredAmount()) {
-            $row['services']['oc'] = $this->getDeclaredAmount();
+            $row['services']['oc'] = $oc;
             $row['services']['oc_currency'] = $this->getDeclaredCurrency();
+        } elseif($oc = $this->getInsuranceAmount()) {
+            $row['services']['oc'] = $oc;
+            $row['services']['oc_currency'] = $this->getInsuranceCurrency();
         } else {
             $row['services']['oc'] = '';
             $row['services']['oc_currency'] = '';
@@ -136,6 +146,15 @@ class ShippingServicesRequest extends AbstractRequest
             $tariff_code = 3;
         }
         $row['shipment']['tariff_code'] = $tariff_code;
+
+        if ($row['shipment']['weight'] >= 50) {
+            $row['shipment']['shipment_type'] = 'CARGO';
+            $row['shipment']['cargo_code'] = 81;
+        } elseif ($row['shipment']['weight'] <= 20 && $row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE') {
+            $row['shipment']['shipment_type'] = 'POST_PACK';
+        } else {
+            $row['shipment']['shipment_type'] = 'PACK';
+        }
 
         $row['services']['e1'] = $this->getOtherParameters('express_city_courier_e') == 'e1' ? 'On' : '';
         $row['services']['e2'] = $this->getOtherParameters('express_city_courier_e') == 'e2' ? 'On' : '';
