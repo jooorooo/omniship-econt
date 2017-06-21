@@ -395,10 +395,9 @@ class Client
 
     /**
      * @param $bol_id
-     * @param null $cancelComment
      * @return CancelParcel[]
      */
-    public function cancelBol($bol_id, $cancelComment = null)
+    public function cancelBol($bol_id)
     {
         $parcels = [];
         $data = [
@@ -417,10 +416,11 @@ class Client
 
     /**
      * @param $bol_id
-     * @param Carbon $date
+     * @param null|Carbon $date_start
+     * @param null|Carbon $date_end
      * @return CancelParcel[]
      */
-    public function requestCourier($bol_id, Carbon $date)
+    public function requestCourier($bol_id, Carbon $date_start = null, Carbon $date_end = null)
     {
         $data = ['system' => [
             'response_type' => 'XML',
@@ -429,17 +429,23 @@ class Client
         $data['loadings']['row']['mediator'] = static::MEDIATOR;
         $data['loadings']['row']['courier_request'] = [
             'only_courier_request' => 1,
-            'time_from' => '10:00',
-            'time_to' => '15:00'
         ];
+        if($date_start) {
+            $data['loadings']['row']['courier_request']['time_from'] = $date_start->format('H:i');
+        }
+        if($date_end) {
+            $data['loadings']['row']['courier_request']['time_to'] = $date_end->format('H:i');
+        }
 
         $post = $this->post($this->getParcelEndpoint(), ['parcels' => $data]);
-        var_dump($post);
-        exit;
+
+        $bag = new Parcel\ParcelBag();
         if (!empty($post->result) && !empty($post->result->e)) {
-            $parcels = new Parcel($post->result->e);
+            foreach ($post->result->e AS $request) {
+                $bag->push($request);
+            }
         }
-        return $parcels;
+        return $bag;
     }
 
     /**
