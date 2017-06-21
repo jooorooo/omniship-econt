@@ -107,7 +107,7 @@ class ShippingServicesRequest extends AbstractRequest
         $row['shipment']['delivery_day'] = '';
 
         //@todo CASH, CREDIT, BONUS (бонус точки), VOUCHE (ваучери)
-        $row['payment']['method'] = $this->getOtherParameters('payment_method') ? : Consts::PAYMENT_CASH; // CASH, CREDIT, BONUS (бонус точки), VOUCHER (ваучери)
+        $row['payment']['method'] = $this->getPaymentMethod() ? : Consts::PAYMENT_CASH; // CASH, CREDIT, BONUS (бонус точки), VOUCHER (ваучери)
         $row['payment']['side'] = $this->getPayer();
         $row['payment']['key_word'] = $row['payment']['method'] == Consts::PAYMENT_CREDIT ? $this->getOtherParameters('credit_account_number') : '';
 
