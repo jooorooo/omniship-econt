@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class ShipmentParam {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class ShipmentParam extends AbstractRequest {
 
 	protected $envelope_num;
 

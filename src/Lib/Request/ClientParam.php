@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class ClientParam {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class ClientParam extends AbstractRequest {
 
 	protected $username;
 

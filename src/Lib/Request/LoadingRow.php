@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class Row {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class LoadingRow extends AbstractRequest {
 
 	protected $returned_loading;
 
@@ -18,7 +20,7 @@ class Row {
 
 	protected $services;
 
-	protected $instructions;
+	protected $instructions = [];
 
 	protected $packing_list;
 
@@ -153,7 +155,17 @@ class Row {
 	 * @param InstructionsParam $instructions
 	 * @return $this
 	 */
-	public function setInstructions(InstructionsParam $instructions)
+	public function setInstruction(InstructionsParam $instructions)
+	{
+		$this->instructions[] = $instructions;
+		return $this;
+	}
+
+	/*
+	 * @param InstructionsParam[] $instructions
+	 * @return $this
+	 */
+	public function setInstructions(array $instructions)
 	{
 		$this->instructions = $instructions;
 		return $this;

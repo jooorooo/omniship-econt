@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class ReceiverParam {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class ReceiverParam extends AbstractRequest {
 
 	protected $country_code;
 

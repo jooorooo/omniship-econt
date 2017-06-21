@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class CdPayOptionsParam {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class CdPayOptionsParam extends AbstractRequest {
 
 	protected $name;
 

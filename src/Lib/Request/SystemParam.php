@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class SystemParam {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class SystemParam extends AbstractRequest {
 
 	protected $validate;
 

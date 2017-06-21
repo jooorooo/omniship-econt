@@ -26,6 +26,7 @@ class ShippingServicesRequest extends AbstractRequest
         $data['system']['validate'] = 1;
         $data['system']['response_type'] = 'XML';
         $data['system']['only_calculate'] = 1;
+        $data['system']['process_all_parcels'] = 1;
 
         $row = [];
         $from = $to = 'OFFICE';
@@ -48,18 +49,6 @@ class ShippingServicesRequest extends AbstractRequest
         $row['receiver']['sms_no'] = $this->getOtherParameters('sms_no');
 
         $row['shipment']['envelope_num'] = $this->getPackageType();
-//        /** @var $items ItemBag */
-//        $items = $this->getItems();
-//        if($items->count()) {
-//            $description = [];
-//            foreach($items->all() AS $item) {
-//                $description[] = $item->getName();
-//            }
-//            $row['shipment']['description'] = implode(', ', $description);
-//            $row['shipment']['pack_count'] = $items->count();
-//        } else {
-//            $row['shipment']['pack_count'] = 0;
-//        }
         $row['shipment']['description'] = $this->getContent();
         $row['shipment']['pack_count'] = $this->getNumberOfPieces();
         $row['shipment']['weight'] = $convert->convertWeightUnit($this->getWeight(), $this->getWeightUnit());
@@ -91,6 +80,24 @@ class ShippingServicesRequest extends AbstractRequest
             }
         }
 
+        $row['shipment']['tariff_sub_code'] = $from . '_' . $to;
+        $tariff_code = 0;
+        if ($row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE') {
+            $tariff_code = 2;
+        } elseif ($row['shipment']['tariff_sub_code'] == 'DOOR_OFFICE') {
+            $tariff_code = 3;
+        }
+        $row['shipment']['tariff_code'] = $tariff_code;
+
+        if ($row['shipment']['weight'] >= 50) {
+            $row['shipment']['shipment_type'] = 'CARGO';
+            $row['shipment']['cargo_code'] = 81;
+        } elseif ($row['shipment']['weight'] <= 20 && $row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE') {
+            $row['shipment']['shipment_type'] = 'POST_PACK';
+        } else {
+            $row['shipment']['shipment_type'] = 'PACK';
+        }
+
         /*
          * delivery_day – Дата за доставка на пратката - възможните стойности са:
          * - work_day – първия работен ден, half_day – първия работен ден или ден с дежурства;
@@ -100,11 +107,10 @@ class ShippingServicesRequest extends AbstractRequest
         $row['shipment']['delivery_day'] = '';
 
         //@todo CASH, CREDIT, BONUS (бонус точки), VOUCHE (ваучери)
-        $row['payment']['method'] = 'CASH';//$this->getOtherParameters('payment_method');
+        $row['payment']['method'] = $this->getOtherParameters('payment_method') ? : Consts::PAYMENT_CASH; // CASH, CREDIT, BONUS (бонус точки), VOUCHER (ваучери)
         $row['payment']['side'] = $this->getPayer();
-        $row['payment']['key_word'] = $row['payment']['method'] == 'CREDIT' ? $this->getOtherParameters('credit_account_number') : '';
+        $row['payment']['key_word'] = $row['payment']['method'] == Consts::PAYMENT_CREDIT ? $this->getOtherParameters('credit_account_number') : '';
 
-        $row['services']['e'] = '';
         $row['services']['dc'] = $this->getBackReceipt() ? 'On' : ''; //обратна разписка;
         $row['services']['dc_cp'] = $this->getBackDocuments() ? 'On' : ''; // стокова разписка;
 
@@ -128,43 +134,19 @@ class ShippingServicesRequest extends AbstractRequest
             $row['services']['cd_currency'] = '';
             $row['services']['cd_agreement_num'] = '';
         }
-        $row['services']['pack1'] = '';
-        $row['services']['pack2'] = '';
-        $row['services']['pack3'] = '';
-        $row['services']['pack4'] = '';
-        $row['services']['pack5'] = '';
-        $row['services']['pack6'] = '';
-        $row['services']['pack7'] = '';
-        $row['services']['pack8'] = '';
-        $row['services']['ref'] = '';
-
-        $row['shipment']['tariff_sub_code'] = $from . '_' . $to;
-        $tariff_code = 0;
-        if ($row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE') {
-            $tariff_code = 2;
-        } elseif ($row['shipment']['tariff_sub_code'] == 'DOOR_OFFICE') {
-            $tariff_code = 3;
+        for($i = 1; $i <= 8; $i++) {
+            $row['services']['pack' . $i] = $this->getOtherParameters('pack_' . $i);
         }
-        $row['shipment']['tariff_code'] = $tariff_code;
+        $row['services']['ref'] = $this->getOtherParameters('ref');
 
-        if ($row['shipment']['weight'] >= 50) {
-            $row['shipment']['shipment_type'] = 'CARGO';
-            $row['shipment']['cargo_code'] = 81;
-        } elseif ($row['shipment']['weight'] <= 20 && $row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE') {
-            $row['shipment']['shipment_type'] = 'POST_PACK';
-        } else {
-            $row['shipment']['shipment_type'] = 'PACK';
+        for($i = 0; $i <= 3; $i++) {
+            $row['services']['e' . ($i ? : '')] = $this->getOtherParameters('express_city_courier_e') == 'e' . ($i ? : '') ? 'On' : '';
         }
-
-        $row['services']['e1'] = $this->getOtherParameters('express_city_courier_e') == 'e1' ? 'On' : '';
-        $row['services']['e2'] = $this->getOtherParameters('express_city_courier_e') == 'e2' ? 'On' : '';
-        $row['services']['e3'] = $this->getOtherParameters('express_city_courier_e') == 'e3' ? 'On' : '';
-
-        $priority_time_type = $this->getOtherParameters('priority_time_type');
-        $priority_time_value = $this->getOtherParameters('priority_time_value');
 
 //        $priority_time_type = 'IN';
 //        $priority_time_value = '18:00';
+        $priority_time_type = $this->getOtherParameters('priority_time_type');
+        $priority_time_value = $this->getOtherParameters('priority_time_value');
 
         $row['services']['p'] = array('type' => $priority_time_type, 'value' => $priority_time_value);
 

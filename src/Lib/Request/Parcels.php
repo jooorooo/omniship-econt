@@ -2,13 +2,15 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class Parcels {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class Parcels extends AbstractRequest {
 
 	protected $system;
 
 	protected $client;
 
-	protected $loadings;
+	protected $loadings = [];
 
 	protected $letters;
 
@@ -50,10 +52,10 @@ class Parcels {
 	}
 
 	/*
-	 * @param LoadingsParam $loadings
+	 * @param LoadingsParam[] $loadings
 	 * @return $this
 	 */
-	public function setLoadings(LoadingsParam $loadings)
+	public function setLoadings($loadings)
 	{
 		$this->loadings = $loadings;
 		return $this;
@@ -65,6 +67,16 @@ class Parcels {
 	public function getLoadings()
 	{
 		return $this->loadings;
+	}
+
+	/*
+	 * @param LoadingsParam $loadings
+	 * @return $this
+	 */
+	public function setLoading(LoadingsParam $loadings)
+	{
+		$this->loadings[] = $loadings;
+		return $this;
 	}
 
 	/*

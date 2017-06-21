@@ -10,6 +10,7 @@ namespace Omniship\Econt;
 
 use Carbon\Carbon;
 use DOMDocument;
+use Omniship\Econt\Lib\Request\Parcels;
 use Omniship\Econt\Lib\Response\CancelParcel;
 use Omniship\Econt\Lib\Response\City;
 use Omniship\Econt\Lib\Response\Client\ClientAddressBag;
@@ -368,10 +369,10 @@ class Client
 
     /**
      * Calculate parcel
-     * @param array $data
+     * @param array|Parcels $data
      * @return bool|Parcel
      */
-    public function calculate(array $data)
+    public function calculate($data)
     {
         $parcels = false;
         $data['client'] = $this->_getLoginCredential();

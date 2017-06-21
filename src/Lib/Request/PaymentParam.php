@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class PaymentParam {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class PaymentParam extends AbstractRequest {
 
 	protected $side;
 

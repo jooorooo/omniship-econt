@@ -2,7 +2,9 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class ServicesParam {
+use Omniship\Econt\Lib\AbstractRequest;
+
+class ServicesParam extends AbstractRequest {
 
 	protected $p;
 

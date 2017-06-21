@@ -2,65 +2,36 @@
 
 namespace Omniship\Econt\Lib\Request;
 
-class LoadingsParam {
+use Omniship\Econt\Lib\AbstractRequest;
 
-	protected $row;
+class LoadingsParam extends AbstractRequest {
 
-	protected $row;
-
-	protected $row;
-
+	protected $row = [];
 
 	/*
-	 * @param RowParam $row
+	 * @param LoadingRow $row
 	 * @return $this
 	 */
-	public function setRow(RowParam $row)
+	public function setRow(LoadingRow $row)
 	{
-		$this->row = $row;
+		$this->row[] = $row;
 		return $this;
 	}
 
 	/*
-	 * @return null|RowParam 
-	 */
-	public function getRow()
-	{
-		return $this->row;
-	}
-
-	/*
-	 * @param RowParam $row
+	 * @param LoadingRow[] $rows
 	 * @return $this
 	 */
-	public function setRow(RowParam $row)
+	public function setRows($rows)
 	{
-		$this->row = $row;
+		$this->row = $rows;
 		return $this;
 	}
 
 	/*
-	 * @return null|RowParam 
+	 * @return LoadingRow[]
 	 */
-	public function getRow()
-	{
-		return $this->row;
-	}
-
-	/*
-	 * @param RowParam $row
-	 * @return $this
-	 */
-	public function setRow(RowParam $row)
-	{
-		$this->row = $row;
-		return $this;
-	}
-
-	/*
-	 * @return null|RowParam 
-	 */
-	public function getRow()
+	public function getRows()
 	{
 		return $this->row;
 	}

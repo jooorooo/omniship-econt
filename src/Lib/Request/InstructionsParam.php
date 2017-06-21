@@ -6,79 +6,18 @@ class InstructionsParam {
 
 	protected $e;
 
-	protected $e;
-
-	protected $e;
-
-	protected $e;
-
-
 	/*
-	 * @param EParam $e
+	 * @param E $e
 	 * @return $this
 	 */
-	public function setE(EParam $e)
+	public function setE(E $e)
 	{
 		$this->e = $e;
 		return $this;
 	}
 
 	/*
-	 * @return null|EParam 
-	 */
-	public function getE()
-	{
-		return $this->e;
-	}
-
-	/*
-	 * @param EParam $e
-	 * @return $this
-	 */
-	public function setE(EParam $e)
-	{
-		$this->e = $e;
-		return $this;
-	}
-
-	/*
-	 * @return null|EParam 
-	 */
-	public function getE()
-	{
-		return $this->e;
-	}
-
-	/*
-	 * @param EParam $e
-	 * @return $this
-	 */
-	public function setE(EParam $e)
-	{
-		$this->e = $e;
-		return $this;
-	}
-
-	/*
-	 * @return null|EParam 
-	 */
-	public function getE()
-	{
-		return $this->e;
-	}
-
-	/*
-	 * @param EParam $e
-	 * @return $this
-	 */
-	public function setE(EParam $e)
-	{
-		$this->e = $e;
-		return $this;
-	}
-
-	/*
-	 * @return null|EParam 
+	 * @return null|E
 	 */
 	public function getE()
 	{
