@@ -190,12 +190,12 @@ class ShippingServicesRequest extends AbstractRequest
                 $row['city'] = '';
             }
             if (!is_null($quarter = $address->getQuarter())) {
-                $row['quarter'] = $quarter->getId();
+                $row['quarter'] = $quarter->getName();
             } else {
                 $row['quarter'] = '';
             }
             if (!is_null($street = $address->getStreet())) {
-                $row['street'] = $street->getId();
+                $row['street'] = $street->getName();
             } else {
                 $row['street'] = '';
             }
