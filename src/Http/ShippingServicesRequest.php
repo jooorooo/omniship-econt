@@ -8,6 +8,7 @@
 
 namespace Omniship\Econt\Http;
 
+use Carbon\Carbon;
 use Omniship\Common\Address;
 use Omniship\Consts;
 use Omniship\Econt\Helper\Convert;
@@ -143,12 +144,11 @@ class ShippingServicesRequest extends AbstractRequest
             $row['services']['e' . ($i ? : '')] = $this->getOtherParameters('express_city_courier_e') == 'e' . ($i ? : '') ? 'On' : '';
         }
 
-//        $priority_time_type = 'IN';
-//        $priority_time_value = '18:00';
-        $priority_time_type = $this->getOtherParameters('priority_time_type');
-        $priority_time_value = $this->getOtherParameters('priority_time_value');
-
-        $row['services']['p'] = array('type' => $priority_time_type, 'value' => $priority_time_value);
+        if (($priority_time_value = $this->getOtherParameters('priority_time_value')) instanceof Carbon) {
+            $row['services']['p'] = array('type' => $this->validatePriorityTimeType($this->getOtherParameters('priority_time_type')), 'value' => $priority_time_value->format('H:i'));
+        } else {
+            $row['services']['p'] = array('type' => '', 'value' => '');
+        }
 
         $data['loadings']['row'] = $row;
 
@@ -218,6 +218,17 @@ class ShippingServicesRequest extends AbstractRequest
         }
 
         return $row;
+    }
+
+    /**
+     * @param $in
+     * @return string
+     */
+    protected function validatePriorityTimeType($in) {
+        if(in_array(($in = strtoupper($in)), ['IN', 'BEFORE', 'AFTER'])) {
+            return $in;
+        }
+        return 'IN';
     }
 
 }
