@@ -8,7 +8,7 @@
 
 namespace Omniship\Econt\Http;
 
-class CreateBillOfLadingRequest extends ShippingServicesRequest
+class CreateBillOfLadingRequest extends ShippingQuoteRequest
 {
     /**
      * @return array
@@ -28,7 +28,7 @@ class CreateBillOfLadingRequest extends ShippingServicesRequest
 
     /**
      * @param $data
-     * @return ShippingServicesResponse
+     * @return ShippingQuoteResponse
      */
     protected function createResponse($data)
     {

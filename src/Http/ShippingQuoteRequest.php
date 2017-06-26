@@ -13,7 +13,7 @@ use Omniship\Common\Address;
 use Omniship\Consts;
 use Omniship\Econt\Helper\Convert;
 
-class ShippingServicesRequest extends AbstractRequest
+class ShippingQuoteRequest extends AbstractRequest
 {
     /**
      * @return array
@@ -163,11 +163,11 @@ class ShippingServicesRequest extends AbstractRequest
 
     /**
      * @param $data
-     * @return ShippingServicesResponse
+     * @return ShippingQuoteResponse
      */
     protected function createResponse($data)
     {
-        return $this->response = new ShippingServicesResponse($this, $data);
+        return $this->response = new ShippingQuoteResponse($this, $data);
     }
 
     /**

@@ -14,7 +14,7 @@ use Omniship\Econt\Http\CodPaymentRequest;
 use Omniship\Econt\Http\CodPaymentsRequest;
 use Omniship\Econt\Http\CreateBillOfLadingRequest;
 use Omniship\Econt\Http\RequestCourierRequest;
-use Omniship\Econt\Http\ShippingServicesRequest;
+use Omniship\Econt\Http\ShippingQuoteRequest;
 use Omniship\Econt\Http\TrackingParcelRequest;
 use Omniship\Common\AbstractGateway;
 use Omniship\Econt\Http\ValidateCredentialsRequest;
@@ -89,11 +89,11 @@ class Gateway extends AbstractGateway
 
     /**
      * @param array $parameters
-     * @return ShippingServicesRequest
+     * @return ShippingQuoteRequest
      */
     public function getQuotes(array $parameters = [])
     {
-        return $this->createRequest(ShippingServicesRequest::class, $this->getParameters() + $parameters);
+        return $this->createRequest(ShippingQuoteRequest::class, $this->getParameters() + $parameters);
     }
 
     /**
