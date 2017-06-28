@@ -166,6 +166,15 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * @return Client
+     */
+    public function getClient() {
+        $client = new Client($this->getUsername(), $this->getPassword());
+        $client->setTestMode($this->getTestMode());
+        return $client;
+    }
+
+    /**
      * Supports Cash On Delivery
      *
      * @return boolean True if this gateway supports the Cash On Delivery

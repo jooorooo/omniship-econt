@@ -87,7 +87,7 @@ class City implements ArrayableInterface, JsonableInterface
      */
     public function setType($type)
     {
-        return $this->setParameter('type', $type);
+        return $this->setParameter('type', $this->mapType($type));
     }
 
     /**
@@ -95,7 +95,7 @@ class City implements ArrayableInterface, JsonableInterface
      */
     public function getType()
     {
-        return $this->getParameter('type');
+        return $this->mapType($this->getParameter('type'));
     }
 
     /**
@@ -387,4 +387,16 @@ class City implements ArrayableInterface, JsonableInterface
         return $this->getParameter('attach_offices');
     }
 
+    /**
+     * @param $type
+     * @return string
+     */
+    protected function mapType($type) {
+        if($type == 'гр.') {
+            $type = 'city';
+        } elseif($type == 'с.') {
+            $type = 'village';
+        }
+        return $type;
+    }
 }
