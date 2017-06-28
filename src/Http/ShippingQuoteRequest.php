@@ -110,7 +110,11 @@ class ShippingQuoteRequest extends AbstractRequest
         //@todo CASH, CREDIT, BONUS (бонус точки), VOUCHE (ваучери)
         $row['payment']['method'] = $this->getPaymentMethod() ? : Consts::PAYMENT_CASH; // CASH, CREDIT, BONUS (бонус точки), VOUCHER (ваучери)
         $row['payment']['side'] = $this->getPayer();
-        $row['payment']['key_word'] = $row['payment']['method'] == Consts::PAYMENT_CREDIT ? $this->getOtherParameters('credit_account_number') : '';
+        if($row['payment']['method'] == Consts::PAYMENT_CREDIT) {
+            $row['payment']['key_word'] = $this->getOtherParameters('credit_account_number');
+        } else {
+            $row['payment']['key_word'] = '';
+        }
 
         $row['services']['dc'] = $this->getBackReceipt() ? 'On' : ''; //обратна разписка;
         $row['services']['dc_cp'] = $this->getBackDocuments() ? 'On' : ''; // стокова разписка;
