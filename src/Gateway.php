@@ -17,6 +17,7 @@ use Omniship\Econt\Http\RequestCourierRequest;
 use Omniship\Econt\Http\ShippingQuoteRequest;
 use Omniship\Econt\Http\TrackingParcelRequest;
 use Omniship\Common\AbstractGateway;
+use Omniship\Econt\Http\TrackingParcelsRequest;
 use Omniship\Econt\Http\ValidateCredentialsRequest;
 
 class Gateway extends AbstractGateway
@@ -97,12 +98,21 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * @param array $parameters
+     * @param string $bol_id
      * @return TrackingParcelRequest
      */
-    public function trackingParcel(array $parameters = [])
+    public function trackingParcel($bol_id)
     {
-        return $this->createRequest(TrackingParcelRequest::class, $this->getParameters() + $parameters);
+        return $this->createRequest(TrackingParcelRequest::class, $this->setBolId($bol_id)->getParameters());
+    }
+
+    /**
+     * @param array $bol_ids
+     * @return TrackingParcelsRequest
+     */
+    public function trackingParcels(array $bol_ids = [])
+    {
+        return $this->createRequest(TrackingParcelsRequest::class, $this->setBolId($bol_ids)->getParameters());
     }
 
     /**
