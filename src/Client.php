@@ -125,6 +125,21 @@ class Client
     }
 
     /**
+     * @return bool
+     */
+    public function validateConnection() {
+        if(!$this->username || !$this->password) {
+            return false;
+        }
+
+        $info = $this->getClientInfo();
+        if(!$info || !$info->getId()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Get client information
      * @return bool|ClientInfo
      */
