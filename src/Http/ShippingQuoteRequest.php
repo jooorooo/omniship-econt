@@ -49,7 +49,7 @@ class ShippingQuoteRequest extends AbstractRequest
         $row['receiver']['email'] = $this->getReceiverEmail();
         $row['receiver']['sms_no'] = $this->getOtherParameters('sms_no');
 
-        $row['shipment']['envelope_num'] = $this->getPackageType();
+        $row['shipment']['envelope_num'] = $this->getOtherParameters('package_id');
         $row['shipment']['description'] = $this->getContent();
         $row['shipment']['pack_count'] = $this->getNumberOfPieces();
         $row['shipment']['weight'] = $convert->convertWeightUnit($this->getWeight(), $this->getWeightUnit());
@@ -105,6 +105,7 @@ class ShippingQuoteRequest extends AbstractRequest
          * или някоя датите върнати от запитване „информация кои са дните за разнос по дадена дата”. По
          * подразбиране се взема първата възможна дата за доставка.
          */
+
         $row['shipment']['delivery_day'] = '';
 
         //@todo CASH, CREDIT, BONUS (бонус точки), VOUCHE (ваучери)

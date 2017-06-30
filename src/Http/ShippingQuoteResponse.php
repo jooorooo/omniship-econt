@@ -30,6 +30,7 @@ class ShippingQuoteResponse extends AbstractResponse
         if(!is_null($this->getCode())) {
             return $result;
         }
+
         $result->push([
             'id' => md5($this->data->getDeliveryDate()),
             'name' => null,
@@ -44,7 +45,7 @@ class ShippingQuoteResponse extends AbstractResponse
             'insurance' => 0,
             'exchange_rate' => null
         ]);
-
+dd($result);
         return $result;
     }
 

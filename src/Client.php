@@ -327,6 +327,25 @@ class Client
     }
 
     /**
+     * Get deliveri days
+     * @return Carbon[]
+     */
+    public function getDeliveryDays()
+    {
+        $request = [
+            'delivery_days' => Carbon::now()->format('Y-m-d'),
+        ];
+        $collection = [];
+        $post = $this->post($this->getServiceEndpoint(), $this->_getRequestData('delivery_days', $request));
+        if (!empty($post->delivery_days) && !empty($post->delivery_days->e)) {
+            foreach ($post->delivery_days->e AS $date) {
+                $collection[] = Carbon::createFromFormat('Y-m-d', (string)$date->date, 'Europe/Sofia');
+            }
+        }
+        return $collection;
+    }
+
+    /**
      * Get status for bill of landing
      * @param $parcelId
      * @return bool|Shipment
@@ -431,10 +450,10 @@ class Client
         $data['loadings']['row']['courier_request'] = [
             'only_courier_request' => 1,
         ];
-        if($date_start) {
+        if ($date_start) {
             $data['loadings']['row']['courier_request']['time_from'] = $date_start->format('H:i');
         }
-        if($date_end) {
+        if ($date_end) {
             $data['loadings']['row']['courier_request']['time_to'] = $date_end->format('H:i');
         }
 
