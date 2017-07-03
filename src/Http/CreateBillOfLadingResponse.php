@@ -30,7 +30,7 @@ class CreateBillOfLadingResponse extends AbstractResponse
         }
         $result->setBolId($this->data->getLoadingNum());
         $result->setBillOfLadingType($result::PDF);
-        $result->setBillOfLadingSource(base64_encode(@file_get_contents($this->data->getPdfUrl())));
+        $result->setBillOfLadingUrl($this->data->getPdfUrl());
         $result->setEstimatedDeliveryDate(Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->getRequest()->getReceiverTimeZone()));
         $result->setPickupDate($this->getRequest()->getShipmentDate());
         $result->setTotal($this->data->getLoadingPrice()->getTotal());

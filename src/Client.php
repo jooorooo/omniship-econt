@@ -210,10 +210,10 @@ class Client
      *  all or zone_id
      * @param null $name
      *  search for main language not en
-     * @param bool $short
+     * @param string $report_type
      * @return City[]
      */
-    public function getCities($zone = null, $name = null, $short = false)
+    public function getCities($zone = null, $name = null, $report_type = 'all')
     {
         $data = [];
         if ($name) {
@@ -222,8 +222,8 @@ class Client
         if ($zone) {
             $data['cities']['id_zone'] = $zone;
         }
-        if ($short) {
-            $data['cities']['report_type'] = 'short';
+        if ($report_type) {
+            $data['cities']['report_type'] = $report_type; //short, all
         }
 
         $collection = [];
