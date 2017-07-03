@@ -25,6 +25,8 @@ class Gateway extends AbstractGateway
 
     private $name = 'Econt';
 
+    const TRACKING_URL = 'http://www.econt.com/tracking/?num=%s';
+
     /**
      * @return string
      */
@@ -182,6 +184,14 @@ class Gateway extends AbstractGateway
         $client = new Client($this->getUsername(), $this->getPassword());
         $client->setTestMode($this->getTestMode());
         return $client;
+    }
+
+    /**
+     * @param $parcel_id
+     * @return string
+     */
+    public function trackingUrl($parcel_id) {
+        return sprintf(static::TRACKING_URL, $parcel_id);
     }
 
     /**
