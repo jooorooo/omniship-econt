@@ -50,7 +50,7 @@ class ShippingQuoteRequest extends AbstractRequest
         $row['receiver']['sms_no'] = $this->getOtherParameters('sms_no');
 
         $row['shipment']['envelope_num'] = $this->getOtherParameters('package_id');
-        $row['shipment']['description'] = $this->getContent();
+        $row['shipment']['description'] = '<![CDATA[' . $this->getContent() . ']]>';
         $row['shipment']['pack_count'] = $this->getNumberOfPieces();
         $row['shipment']['weight'] = $convert->convertWeightUnit($this->getWeight(), $this->getWeightUnit());
 

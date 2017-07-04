@@ -629,8 +629,6 @@ class Client
 
                 if (is_array($value)) {
                     $xml .= "\r\n" . $this->prepareXML($value);
-                } elseif(in_array($key, ['description'])) {
-                    $xml .= '<![CDATA[' . $value . ']]>';
                 } else {
                     $xml .= $value;
                 }
