@@ -60,15 +60,15 @@ class ShippingQuoteRequest extends AbstractRequest
 
         //ако клиента откаже пратката как да се поемат разноските по пратката. Възможни стойности: delivery_return - доставката и връщането да са за моя сметка да са за сметка на подателя; return – само връщането да е за сметка на подателя
         $row['instructions'] = [];
-        if($row['shipment']['pay_after_accept']) {
+        if($row['shipment']['pay_after_accept'] || $row['shipment']['pay_after_test']) {
             $row['instructions'][0]['e']['type'] = 'return';
             $row['instructions'][0]['e']['delivery_fail_action'] = 'return_to_sender';
             $row['instructions'][0]['e']['reject_delivery_payment_side'] = 'receiver';
             $row['instructions'][0]['e']['reject_return_payment_side'] = 'receiver';
-            if ($this->getOtherParameters('instruction_returns') == 'delivery_return') {
+            if ($this->getInstructionReturns() == 'delivery_return') {
                 $row['instructions'][0]['e']['reject_delivery_payment_side'] = 'sender';
                 $row['instructions'][0]['e']['reject_return_payment_side'] = 'sender';
-            } else if ($this->getOtherParameters('instruction_returns') == 'return') {
+            } else if ($this->getInstructionReturns() == 'return') {
                 $row['instructions'][0]['e']['reject_return_payment_side'] = 'sender';
             }
         }
