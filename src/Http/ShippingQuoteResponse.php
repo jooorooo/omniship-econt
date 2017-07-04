@@ -45,7 +45,6 @@ class ShippingQuoteResponse extends AbstractResponse
             'insurance' => 0,
             'exchange_rate' => null
         ]);
-dd($result);
         return $result;
     }
 
