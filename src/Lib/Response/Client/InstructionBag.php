@@ -31,8 +31,8 @@ class InstructionBag extends Collection
     {
         if ($instructions instanceof SimpleXMLElement) {
             $temporary = [];
-            if ($instructions->children()->count()) {
-                foreach ($instructions AS $cd) {
+            if(!empty($instructions->e)) {
+                foreach ($instructions->e AS $cd) {
                     $temporary[] = $cd;
                 }
             }

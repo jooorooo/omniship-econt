@@ -24,8 +24,14 @@ class CdAgreementBag extends Collection
         if($agreements instanceof SimpleXMLElement) {
             $temporary = [];
             if($agreements->children()->count()) {
-                foreach ($agreements AS $cd) {
-                    $temporary[] = $cd;
+                foreach ((array)$agreements AS $cd) {
+                    if(is_array($cd)) {
+                        foreach($cd AS $c) {
+                            $temporary[] = $c;
+                        }
+                    } else {
+                        $temporary[] = $cd;
+                    }
                 }
             }
             $agreements = $temporary;
