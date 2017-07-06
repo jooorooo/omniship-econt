@@ -190,36 +190,36 @@ class ShippingQuoteRequest extends AbstractRequest
                 $row['country_code'] = $country->getIso3();
             }
             if (!is_null($city = $address->getCity())) {
-                $row['city'] = $city->getName();
+                $row['city'] = '<![CDATA[' . $city->getName() . ']]>';
             } else {
                 $row['city'] = '';
             }
             if (!is_null($quarter = $address->getQuarter())) {
-                $row['quarter'] = $quarter->getName();
+                $row['quarter'] = '<![CDATA[' . $quarter->getName() . ']]>';
             } else {
                 $row['quarter'] = '';
             }
             if (!is_null($street = $address->getStreet())) {
-                $row['street'] = $street->getName();
+                $row['street'] = '<![CDATA[' . $street->getName() . ']]>';
             } else {
                 $row['street'] = '';
             }
 
             $row['post_code'] = $address->getPostCode();
             $row['address_zip'] = $address->getPostCode();
-            $row['street_num'] = $address->getStreetNumber();
-            $row['street_bl'] = $address->getBuilding();
-            $row['street_vh'] = $address->getEntrance();
-            $row['street_et'] = $address->getFloor();
-            $row['street_ap'] = $address->getApartment();
-            $row['street_other'] = implode(' ', array_filter([$address->getAddress1(), $address->getAddress2(), $address->getAddress3()]));
+            $row['street_num'] = '<![CDATA[' . $address->getStreetNumber() . ']]>';
+            $row['street_bl'] = '<![CDATA[' . $address->getBuilding() . ']]>';
+            $row['street_vh'] = '<![CDATA[' . $address->getEntrance() . ']]>';
+            $row['street_et'] = '<![CDATA[' . $address->getFloor() . ']]>';
+            $row['street_ap'] = '<![CDATA[' . $address->getApartment() . ']]>';
+            $row['street_other'] = '<![CDATA[' . implode(' ', array_filter([$address->getAddress1(), $address->getAddress2(), $address->getAddress3()])) . ']]>';
             if ($company = $address->getCompanyName()) {
-                $row['name'] = $address->getCompanyName();
-                $row['name_person'] = $address->getFirstName() . ' ' . $address->getLastName();
+                $row['name'] = '<![CDATA[' . $address->getCompanyName() . ']]>';
+                $row['name_person'] = '<![CDATA[' . $address->getFullName() . ']]>';
             } else {
-                $row['name'] = $address->getFirstName() . ' ' . $address->getLastName();
+                $row['name'] = '<![CDATA[' . $address->getFullName() . ']]>';
             }
-            $row['phone_num'] = $address->getPhone();
+            $row['phone_num'] = '<![CDATA[' . $address->getPhone() . ']]>';
         }
 
         return $row;
