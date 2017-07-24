@@ -26,6 +26,7 @@ use Omniship\Econt\Lib\Response\Street;
 use Omniship\Econt\Lib\Response\Zone;
 use Omniship\Econt\Lib\Response\Client\Client AS ResponseClient;
 use Omniship\Econt\Lib\Response\Parcel;
+use Omniship\Helper\Collection;
 use SimpleXMLElement;
 use GuzzleHttp\Client AS HttpClient;
 
@@ -174,7 +175,7 @@ class Client
 
     /**
      * Get offices
-     * @return Office[]
+     * @return Office[]|Collection
      */
     public function getOffices()
     {
@@ -185,12 +186,12 @@ class Client
                 $collection[] = new Office($office);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get zones
-     * @return Zone[]
+     * @return Zone[]|Collection
      */
     public function getCitiesZones()
     {
@@ -201,7 +202,7 @@ class Client
                 $collection[] = new Zone($zone);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
@@ -211,9 +212,9 @@ class Client
      * @param null $name
      *  search for main language not en
      * @param string $report_type
-     * @return City[]
+     * @return City[]|Collection
      */
-    public function getCities($zone = null, $name = null, $report_type = 'all')
+    public function getCities($zone = null, $name = null, $report_type = null)
     {
         $data = [];
         if ($name) {
@@ -223,7 +224,7 @@ class Client
             $data['cities']['id_zone'] = $zone;
         }
         if ($report_type) {
-            $data['cities']['report_type'] = $report_type; //short, all
+            $data['cities']['report_type'] = $report_type; //short
         }
 
         $collection = [];
@@ -233,12 +234,12 @@ class Client
                 $collection[] = new City($city);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get clients information for client
-     * @return ResponseClient[]
+     * @return ResponseClient[]|Collection
      */
     public function getClients()
     {
@@ -249,12 +250,12 @@ class Client
                 $collection[] = new ResponseClient($client);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get countries
-     * @return Country[]
+     * @return Country[]|Collection
      */
     public function getCountries()
     {
@@ -265,12 +266,12 @@ class Client
                 $collection[] = new Country($client);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get regions
-     * @return Region[]
+     * @return Region[]|Collection
      */
     public function getRegions()
     {
@@ -281,12 +282,12 @@ class Client
                 $collection[] = new Region($client);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get quarters
-     * @return Quarter[]
+     * @return Quarter[]|Collection
      */
     public function getQuarters()
     {
@@ -297,12 +298,12 @@ class Client
                 $collection[] = new Quarter($client);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get streets
-     * @return Street[]
+     * @return Street[]|Collection
      */
     public function getStreets()
     {
@@ -313,14 +314,14 @@ class Client
                 $collection[] = new Street($client);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get post boxes
      * @param $city
      * @param $quarter
-     * @return PostBox[]
+     * @return PostBox[]|Collection
      */
     public function getPostBoxes($city = null, $quarter = null)
     {
@@ -338,12 +339,12 @@ class Client
                 $collection[] = new PostBox($client);
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
      * Get deliveri days
-     * @return Carbon[]
+     * @return Carbon[]|Collection
      */
     public function getDeliveryDays()
     {
@@ -357,7 +358,7 @@ class Client
                 $collection[] = Carbon::createFromFormat('Y-m-d', (string)$date->date, 'Europe/Sofia');
             }
         }
-        return $collection;
+        return new Collection($collection);
     }
 
     /**
@@ -563,7 +564,13 @@ class Client
             return !($this->error = 'Return invalid XML response');
         }
 
-        return new SimpleXMLElement($body);
+        $xml = new SimpleXMLElement($body);
+
+        if(!empty($xml->error) && !empty($xml->error->message)) {
+            $this->error = (string)$xml->error->message;
+        }
+
+        return $xml;
     }
 
     /**
