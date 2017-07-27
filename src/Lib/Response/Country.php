@@ -18,14 +18,14 @@ class Country implements ArrayableInterface, JsonableInterface
     use Parameters;
 
     protected $values = array(
-        'id' => ['type' => 'float'],
+        'id' => ['type' => 'int'],
         'country_name', 'country_name_en',
-        'id_zone' => ['type' => 'float'],
+        'id_zone' => ['type' => 'int'],
         'zone_name', 'zone_name_en'
     );
 
     /**
-     * @param mixed $id
+     * @param int $id
      * @return $this
      */
     public function setId($id)
@@ -34,7 +34,7 @@ class Country implements ArrayableInterface, JsonableInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getId()
     {
@@ -76,7 +76,7 @@ class Country implements ArrayableInterface, JsonableInterface
     }
 
     /**
-     * @param float $id_zone
+     * @param int $id_zone
      * @return $this
      */
     public function setIdZone($id_zone)
@@ -85,7 +85,7 @@ class Country implements ArrayableInterface, JsonableInterface
     }
 
     /**
-     * @return float
+     * @return int
      */
     public function getIdZone()
     {
