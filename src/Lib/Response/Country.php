@@ -18,10 +18,28 @@ class Country implements ArrayableInterface, JsonableInterface
     use Parameters;
 
     protected $values = array(
+        'id' => ['type' => 'float'],
         'country_name', 'country_name_en',
         'id_zone' => ['type' => 'float'],
         'zone_name', 'zone_name_en'
     );
+
+    /**
+     * @param mixed $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        return $this->setParameter('id', $id);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
+    }
 
     /**
      * @param string $country_name
