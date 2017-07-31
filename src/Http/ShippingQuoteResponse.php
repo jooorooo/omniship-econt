@@ -30,7 +30,7 @@ class ShippingQuoteResponse extends AbstractResponse
         if(!is_null($this->getCode())) {
             return $result;
         }
-
+        
         $result->push([
             'id' => strtolower($this->getRequest()->getServiceId()),
             'name' => null,
