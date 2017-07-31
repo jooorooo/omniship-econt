@@ -82,6 +82,7 @@ class ShippingQuoteRequest extends AbstractRequest
         }
 
         $row['shipment']['tariff_sub_code'] = $from . '_' . $to;
+        $this->setServiceId($row['shipment']['tariff_sub_code']);
         $tariff_code = 0;
         if ($row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE') {
             $tariff_code = 2;

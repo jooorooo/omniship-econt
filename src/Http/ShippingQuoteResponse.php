@@ -32,7 +32,7 @@ class ShippingQuoteResponse extends AbstractResponse
         }
 
         $result->push([
-            'id' => md5($this->data->getDeliveryDate()),
+            'id' => strtolower($this->getRequest()->getServiceId()),
             'name' => null,
             'description' => null,
             'price' => $this->data->getLoadingPrice()->getTotal(),
