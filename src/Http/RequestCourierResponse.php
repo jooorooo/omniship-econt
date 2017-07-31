@@ -8,10 +8,17 @@
 
 namespace Omniship\Econt\Http;
 
+use Omniship\Common\RequestCourier;
 use Omniship\Econt\Lib\Response\CancelParcel;
 
 class RequestCourierResponse extends AbstractResponse
 {
+    /**
+     * The data contained in the response.
+     *
+     * @var \Omniship\Econt\Lib\Response\Parcel
+     */
+    protected $data;
 
     /**
      * @return bool
@@ -22,17 +29,12 @@ class RequestCourierResponse extends AbstractResponse
             return false;
         }
 
-        var_dump($this->data); exit;
+        $request = new RequestCourier([
+            'request_id' => $this->data->getCourierRequestId(),
+            'pickup_date' => $this->getRequest()->getStartDate()
+        ]);
 
-        $bol_id = (string)$this->getRequest()->getBolId();
-        /** @var $result CancelParcel */
-        $result = !empty($this->data[$bol_id]) ? $this->data[$bol_id] : false;
-        if(!$result->getSuccess()) {
-            $this->error = $result->getError();
-            $this->errorCode = $result->getErrorCode();
-            return false;
-        }
-        return true;
+        return $request;
     }
 
 }

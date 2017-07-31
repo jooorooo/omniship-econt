@@ -481,7 +481,8 @@ class Client
                 $bag->push($request);
             }
         }
-        return $bag;
+
+        return $bag->first();
     }
 
     /**
