@@ -40,7 +40,7 @@ class ShippingQuoteResponse extends AbstractResponse
             'pickup_time' => Carbon::now($this->request->getSenderTimeZone()),
             'delivery_date' => Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->request->getReceiverTimeZone()),
             'delivery_time' => null,
-            'currency' => $this->data->getLoadingPrice()->getCurrency(),
+            'currency' => $this->data->getLoadingPrice()->getCurrencyCode(),
             'tax' => 0,
             'insurance' => 0,
             'exchange_rate' => null
