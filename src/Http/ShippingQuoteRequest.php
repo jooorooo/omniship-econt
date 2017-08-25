@@ -142,12 +142,16 @@ class ShippingQuoteRequest extends AbstractRequest
             $row['services']['cd_agreement_num'] = '';
         }
         for($i = 1; $i <= 8; $i++) {
-            $row['services']['pack' . $i] = $this->getOtherParameters('pack_' . $i);
+            if($pack = $this->getOtherParameters('pack_' . $i)) {
+                $row['services']['pack' . $i] = $pack;
+            }
         }
         $row['services']['ref'] = $this->getOtherParameters('ref');
 
         for($i = 0; $i <= 3; $i++) {
-            $row['services']['e' . ($i ? : '')] = $this->getOtherParameters('express_city_courier_e') == 'e' . ($i ? : '') ? 'On' : '';
+            if(($other = ($this->getOtherParameters('express_city_courier_e') == 'e' . ($i ? : '') ? 'On' : ''))) {
+                $row['services']['e' . ($i ?: '')] = $other;
+            }
         }
 
         if (($priority_time_value = $this->getOtherParameters('priority_time_value')) instanceof Carbon) {
