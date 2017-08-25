@@ -540,7 +540,9 @@ class Client
             return false;
         }
 
-        $client = new HttpClient();
+        $client = new HttpClient([
+            'timeout'         => 30,
+        ]);
         $httpRequest = $client->post($url, array(
             'form_params' => [
                 'xml' => $document
