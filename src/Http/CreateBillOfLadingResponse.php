@@ -28,6 +28,7 @@ class CreateBillOfLadingResponse extends AbstractResponse
         if(!is_null($this->getCode()) || !($this->data instanceof Parcel)) {
             return $result;
         }
+        $result->setServiceId(strtolower($this->getRequest()->getServiceId()));
         $result->setBolId($this->data->getLoadingNum());
         $result->setBillOfLadingType($result::PDF);
         $result->setBillOfLadingUrl($this->data->getPdfUrl());
