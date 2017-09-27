@@ -540,14 +540,19 @@ class Client
             return false;
         }
 
-        $client = new HttpClient([
-            'timeout'         => 30,
-        ]);
-        $httpRequest = $client->post($url, array(
-            'form_params' => [
-                'xml' => $document
-            ]
-        ));
+        try {
+            $client = new HttpClient([
+                'timeout'         => 0,
+            ]);
+
+            $httpRequest = $client->post($url, array(
+                'form_params' => [
+                    'xml' => $document
+                ]
+            ));
+        } catch (\Exception $e) {
+            return !($this->error = sprintf('CURL Error: %s', $e->getMessage()));
+        }
 
         if ($httpRequest->getStatusCode() != 200) {
             return !($this->error = sprintf('Return response with status code: %s', $httpRequest->getStatusCode()));

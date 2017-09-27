@@ -212,11 +212,21 @@ class ShippingQuoteRequest extends AbstractRequest
 
             $row['post_code'] = $address->getPostCode();
             $row['address_zip'] = $address->getPostCode();
-            $row['street_num'] = '<![CDATA[' . $address->getStreetNumber() . ']]>';
-            $row['street_bl'] = '<![CDATA[' . $address->getBuilding() . ']]>';
-            $row['street_vh'] = '<![CDATA[' . $address->getEntrance() . ']]>';
-            $row['street_et'] = '<![CDATA[' . $address->getFloor() . ']]>';
-            $row['street_ap'] = '<![CDATA[' . $address->getApartment() . ']]>';
+            if($address->getStreetNumber()) {
+                $row['street_num'] = '<![CDATA[' . $address->getStreetNumber() . ']]>';
+            }
+            if($address->getBuilding()) {
+                $row['street_bl'] = '<![CDATA[' . $address->getBuilding() . ']]>';
+            }
+            if($address->getEntrance()) {
+                $row['street_vh'] = '<![CDATA[' . $address->getEntrance() . ']]>';
+            }
+            if($address->getFloor()) {
+                $row['street_et'] = '<![CDATA[' . $address->getFloor() . ']]>';
+            }
+            if($address->getApartment()) {
+                $row['street_ap'] = '<![CDATA[' . $address->getApartment() . ']]>';
+            }
             $row['street_other'] = '<![CDATA[' . implode(' ', array_filter([$address->getAddress1(), $address->getAddress2(), $address->getAddress3()])) . ']]>';
             if ($company = $address->getCompanyName()) {
                 $row['name'] = '<![CDATA[' . $address->getCompanyName() . ']]>';
