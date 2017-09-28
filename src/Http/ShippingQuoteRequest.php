@@ -185,9 +185,13 @@ class ShippingQuoteRequest extends AbstractRequest
     {
         $row = [];
         if ($address) {
-            if (!is_null($office = $address->getOffice()) && $office->getId()) {
-                $row['office_code'] = $office->getId();
+            if ($company = $address->getCompanyName()) {
+                $row['name'] = '<![CDATA[' . $address->getCompanyName() . ']]>';
+                $row['name_person'] = '<![CDATA[' . $address->getFullName() . ']]>';
+            } else {
+                $row['name'] = '<![CDATA[' . $address->getFullName() . ']]>';
             }
+            $row['phone_num'] = '<![CDATA[' . $address->getPhone() . ']]>';
             if (!is_null($country = $address->getCountry())) {
                 $row['country_code'] = $country->getIso3();
             }
@@ -195,6 +199,11 @@ class ShippingQuoteRequest extends AbstractRequest
                 $row['city'] = '<![CDATA[' . $city->getName() . ']]>';
             } else {
                 $row['city'] = '';
+            }
+
+            if (!is_null($office = $address->getOffice()) && $office->getId()) {
+                $row['office_code'] = $office->getId();
+                return $row;
             }
             if (!is_null($quarter = $address->getQuarter())) {
                 $row['quarter'] = '<![CDATA[' . $quarter->getName() . ']]>';
@@ -225,13 +234,6 @@ class ShippingQuoteRequest extends AbstractRequest
                 $row['street_ap'] = '<![CDATA[' . $address->getApartment() . ']]>';
             }
             $row['street_other'] = '<![CDATA[' . implode(' ', array_filter([$address->getAddress1(), $address->getAddress2(), $address->getAddress3()])) . ']]>';
-            if ($company = $address->getCompanyName()) {
-                $row['name'] = '<![CDATA[' . $address->getCompanyName() . ']]>';
-                $row['name_person'] = '<![CDATA[' . $address->getFullName() . ']]>';
-            } else {
-                $row['name'] = '<![CDATA[' . $address->getFullName() . ']]>';
-            }
-            $row['phone_num'] = '<![CDATA[' . $address->getPhone() . ']]>';
         }
 
         return $row;
