@@ -111,7 +111,7 @@ class ShippingQuoteRequest extends AbstractRequest
 
         //@todo CASH, CREDIT, BONUS (бонус точки), VOUCHE (ваучери)
         $row['payment']['method'] = $this->getPaymentMethod() ? : Consts::PAYMENT_CASH; // CASH, CREDIT, BONUS (бонус точки), VOUCHER (ваучери)
-        $row['payment']['side'] = $this->getPayer();
+        $row['payment']['side'] = $this->getPayer() ? : Consts::PAYER_SENDER;
         if($row['payment']['method'] == Consts::PAYMENT_CREDIT) {
             $row['payment']['key_word'] = $this->getOtherParameters('credit_account_number');
         } else {
@@ -200,10 +200,8 @@ class ShippingQuoteRequest extends AbstractRequest
             } else {
                 $row['city'] = '';
             }
-
             if (!is_null($office = $address->getOffice()) && $office->getId()) {
                 $row['office_code'] = $office->getId();
-                return $row;
             }
             if (!is_null($quarter = $address->getQuarter())) {
                 $row['quarter'] = '<![CDATA[' . $quarter->getName() . ']]>';

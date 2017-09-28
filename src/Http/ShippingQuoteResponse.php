@@ -10,6 +10,7 @@ namespace Omniship\Econt\Http;
 
 use Carbon\Carbon;
 use Omniship\Common\ShippingQuoteBag;
+use Omniship\Consts;
 use Omniship\Econt\Lib\Response\Parcel;
 
 class ShippingQuoteResponse extends AbstractResponse
@@ -41,9 +42,9 @@ class ShippingQuoteResponse extends AbstractResponse
             'delivery_time' => null,
             'currency' => $this->data->getLoadingPrice()->getCurrencyCode(),
             'tax' => 0,
-            'insurance' => 0,
+            'insurance' => $this->data->getLoadingPrice()->getOC() ? : 0,
             'exchange_rate' => null,
-            'payer' => $this->getRequest()->getPayer()
+            'payer' => $this->getRequest()->getPayer() ? : Consts::PAYER_SENDER
         ]);
         return $result;
     }
