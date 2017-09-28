@@ -151,8 +151,8 @@ class ShippingQuoteRequest extends AbstractRequest
             }
         }
 
-        if (($priority_time_value = $this->getOtherParameters('priority_time_value')) instanceof Carbon) {
-            $row['services']['p'] = array('type' => $this->validatePriorityTimeType($this->getOtherParameters('priority_time_type')), 'value' => $priority_time_value->format('H:i'));
+        if (!is_null($priority_time = $this->getPriorityTime())) {
+            $row['services']['p'] = array('type' => $this->validatePriorityTimeType($this->getPriorityTimeType()), 'value' => $priority_time->format('H:i'));
         } else {
             $row['services']['p'] = array('type' => '', 'value' => '');
         }

@@ -195,20 +195,30 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Supports Cash On Delivery
-     *
-     * @return boolean True if this gateway supports the Cash On Delivery
+     * {@inheritdoc}
      */
     public function supportsCashOnDelivery()
     {
         return true;
     }
     /**
-     * Supports Insurance
-     *
-     * @return boolean True if this gateway supports the Insurance
+     * {@inheritdoc}
      */
     public function supportsInsurance()
+    {
+        return true;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function supportPriorityTime()
+    {
+        return true;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function supportMoneyTransfer()
     {
         return true;
     }
