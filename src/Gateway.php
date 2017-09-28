@@ -212,13 +212,4 @@ class Gateway extends AbstractGateway
     {
         return true;
     }
-    /**
-     * Supports Declared
-     *
-     * @return boolean True if this gateway supports the Declared
-     */
-    public function supportsDeclared()
-    {
-        return true;
-    }
 }

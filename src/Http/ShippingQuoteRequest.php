@@ -121,10 +121,7 @@ class ShippingQuoteRequest extends AbstractRequest
         $row['services']['dc'] = $this->getBackReceipt() ? 'On' : ''; //обратна разписка;
         $row['services']['dc_cp'] = $this->getBackDocuments() ? 'On' : ''; // стокова разписка;
 
-        if ($oc = $this->getDeclaredAmount()) {
-            $row['services']['oc'] = $oc;
-            $row['services']['oc_currency'] = $this->getDeclaredCurrency();
-        } elseif($oc = $this->getInsuranceAmount()) {
+        if($oc = $this->getInsuranceAmount()) {
             $row['services']['oc'] = $oc;
             $row['services']['oc_currency'] = $this->getInsuranceCurrency();
         } else {
