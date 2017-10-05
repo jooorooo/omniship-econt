@@ -20,6 +20,7 @@ class LoadingPrice implements ArrayableInterface, JsonableInterface
     protected $values = array(
         'C' => ['type' => 'float'],
         'OC' => ['type' => 'float'],
+        'CD' => ['type' => 'float'],
         'total' => ['type' => 'float'],
         'sender_total' => ['type' => 'float'],
         'receiver_total' => ['type' => 'float'],
@@ -59,6 +60,23 @@ class LoadingPrice implements ArrayableInterface, JsonableInterface
     public function getOC()
     {
         return $this->getParameter('OC');
+    }
+
+    /**
+     * @param float $CD
+     * @return $this
+     */
+    public function setCD($CD)
+    {
+        return $this->setParameter('CD', $CD);
+    }
+
+    /**
+     * @return float
+     */
+    public function getCD()
+    {
+        return $this->getParameter('CD');
     }
 
     /**

@@ -43,6 +43,7 @@ class ShippingQuoteResponse extends AbstractResponse
             'currency' => $this->data->getLoadingPrice()->getCurrencyCode(),
             'tax' => 0,
             'insurance' => $this->data->getLoadingPrice()->getOC() ? : 0,
+            'cash_on_delivery' => $this->data->getLoadingPrice()->getCD() ? : 0,
             'exchange_rate' => null,
             'payer' => $this->getRequest()->getPayer() ? : Consts::PAYER_SENDER
         ]);
