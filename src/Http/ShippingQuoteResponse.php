@@ -31,6 +31,7 @@ class ShippingQuoteResponse extends AbstractResponse
         if(!is_null($this->getCode())) {
             return $result;
         }
+
         $result->push([
             'id' => strtolower($this->getRequest()->getServiceId()),
             'name' => null,
@@ -45,9 +46,30 @@ class ShippingQuoteResponse extends AbstractResponse
             'insurance' => $this->data->getLoadingPrice()->getOC() ? : 0,
             'cash_on_delivery' => $this->data->getLoadingPrice()->getCD() ? : 0,
             'exchange_rate' => null,
-            'payer' => $this->getRequest()->getPayer() ? : Consts::PAYER_SENDER
+            'payer' => $this->getRequest()->getPayer() ? : Consts::PAYER_SENDER,
+            'allowance_fixed_time_delivery' => $this->_validateAllowance(true),
+            'allowance_cash_on_delivery' => $this->_validateAllowance(),
+            'allowance_insurance' => $this->_validateAllowance()
         ]);
         return $result;
+    }
+
+    /**
+     * @param bool $office_check
+     * @return bool
+     */
+    protected function _validateAllowance($office_check = false) {
+        $receiver_address = $this->getRequest()->getReceiverAddress();
+        if(!$receiver_address || !$receiver_address->getCountry()) {
+            return false;
+        }
+        if($office_check && $receiver_address->getOffice()) {
+            return false;
+        }
+        if(strtoupper($receiver_address->getCountry()->getIso3()) == 'BGR' || strtoupper($receiver_address->getCountry()->getIso2()) == 'BG') {
+            return true;
+        }
+        return false;
     }
 
 }
