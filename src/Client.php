@@ -10,6 +10,7 @@ namespace Omniship\Econt;
 
 use Carbon\Carbon;
 use DOMDocument;
+use Omniship\Econt\Helper\XmlConstructor;
 use Omniship\Econt\Lib\Request\Parcels;
 use Omniship\Econt\Lib\Response\CancelParcel;
 use Omniship\Econt\Lib\Response\City;
@@ -536,13 +537,17 @@ class Client
     public function post($url, $data = [])
     {
         $document = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . (is_array($data) ? $this->prepareXML($data) : $data);
+
+//        $xml = new XmlConstructor();
+//        $document = $xml->fromArray($data)->getDocument();
+
         if (!$this->isXMLContentValid($document)) {
             return false;
         }
 
         try {
             $client = new HttpClient([
-                'timeout'         => 0,
+                'timeout'         => 60,
             ]);
 
             $httpRequest = $client->post($url, array(
