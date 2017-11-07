@@ -31,7 +31,7 @@ class CodPaymentResponse extends AbstractResponse
 
         $cod_payment = new CodPayment([
             'id' => $this->getRequest()->getBolId(),
-            'date' => Carbon::createFromFormat('Y-m-d H:i:s', $this->data->getCdSendTime(), 'Europe/Sofia'),
+            'date' => !empty($this->data->getCdSendTime()) ? Carbon::createFromFormat('Y-m-d H:i:s', $this->data->getCdSendTime(), 'Europe/Sofia') : null,
             'price' => $this->data->getCdSendSum()
         ]);
         return $cod_payment;

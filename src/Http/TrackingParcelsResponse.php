@@ -51,7 +51,7 @@ class TrackingParcelsResponse extends AbstractResponse
                         'id' => md5($quote->getTime()),
                         'name' => $quote->getName(),
                         'events' => $this->_getEvents($quote),
-                        'shipment_date' => $quote->getEvnTime() ? Carbon::createFromFormat('Y-m-d H:i:s', $quote->getEvnTime(), $this->getRequest()->getReceiverTimeZone()) : Carbon::createFromFormat('Y-m-d H:i', $quote->getTime(), $this->getRequest()->getReceiverTimeZone()),
+                        'shipment_date' => $this->_getTime($quote),
                         'estimated_delivery_date' => Carbon::createFromFormat('Y-m-d', (string)$tracking->getExpectedDeliveryDay(), $this->getRequest()->getReceiverTimeZone()),
                         'origin_service_area' => null,
                         'destination_service_area' => new Component(['id' => md5(json_encode($quote->getName())), 'name' => $quote->getName()]),
@@ -78,6 +78,20 @@ class TrackingParcelsResponse extends AbstractResponse
             ]));
         }
         return $result;
+    }
+
+    /**
+     * @param $data
+     * @return EventBag
+     */
+    protected function _getTime(\Omniship\Econt\Lib\Response\Shipment\Track $quote)
+    {
+        if($quote->getEvnTime() && strpos($quote->getEvnTime(), '1970') === false) {
+            return Carbon::createFromFormat('Y-m-d H:i:s', $quote->getEvnTime(), $this->getRequest()->getReceiverTimeZone());
+        } elseif($quote->getTime() && strpos($quote->getTime(), '1970') === false) {
+            return Carbon::createFromFormat('Y-m-d H:i:s', $quote->getTime(), $this->getRequest()->getReceiverTimeZone());
+        }
+        return null;
     }
 
 }
