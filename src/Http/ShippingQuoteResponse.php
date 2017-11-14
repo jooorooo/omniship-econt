@@ -47,9 +47,9 @@ class ShippingQuoteResponse extends AbstractResponse
             'cash_on_delivery' => $this->data->getLoadingPrice()->getCD() ? : 0,
             'exchange_rate' => null,
             'payer' => $this->getRequest()->getPayer() ? : Consts::PAYER_SENDER,
-            'allowance_fixed_time_delivery' => $this->_validateAllowance(true),
-            'allowance_cash_on_delivery' => $this->_validateAllowance(),
-            'allowance_insurance' => $this->_validateAllowance()
+            'allowance_fixed_time_delivery' => true,//$this->_validateAllowance(true),
+            'allowance_cash_on_delivery' => true,//$this->_validateAllowance(),
+            'allowance_insurance' => true,//$this->_validateAllowance()
         ]);
         return $result;
     }
