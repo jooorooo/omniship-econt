@@ -91,11 +91,17 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * @param array $parameters
+     * @param array|ShippingQuoteRequest $parameters
      * @return ShippingQuoteRequest
      */
-    public function getQuotes(array $parameters = [])
+    public function getQuotes($parameters = [])
     {
+        if ($parameters instanceof ShippingQuoteRequest) {
+            return $parameters;
+        }
+        if (!is_array($parameters)) {
+            $parameters = [];
+        }
         return $this->createRequest(ShippingQuoteRequest::class, $this->getParameters() + $parameters);
     }
 
@@ -118,10 +124,17 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * @param array $parameters
+     * @param array|CreateBillOfLadingRequest $parameters
      * @return CreateBillOfLadingRequest
      */
-    public function createBillOfLading(array $parameters = []) {
+    public function createBillOfLading($parameters = [])
+    {
+        if ($parameters instanceof CreateBillOfLadingRequest) {
+            return $parameters;
+        }
+        if (!is_array($parameters)) {
+            $parameters = [];
+        }
         return $this->createRequest(CreateBillOfLadingRequest::class, $this->getParameters() + $parameters);
     }
 
@@ -159,7 +172,8 @@ class Gateway extends AbstractGateway
      * @param null $cancelComment
      * @return CancelBillOfLadingRequest
      */
-    public function cancelBillOfLading($bol_id, $cancelComment=null) {
+    public function cancelBillOfLading($bol_id, $cancelComment = null)
+    {
         $this->setBolId((float)$bol_id)->setCancelComment($cancelComment);
         return $this->createRequest(CancelBillOfLadingRequest::class, $this->getParameters());
     }
@@ -170,7 +184,8 @@ class Gateway extends AbstractGateway
      *      if set null get mode from currently instance
      * @return ValidateCredentialsRequest
      */
-    public function validateCredentials(array $parameters = [], $test_mode = null) {
+    public function validateCredentials(array $parameters = [], $test_mode = null)
+    {
         $instance = new Gateway();
         $instance->initialize($parameters);
         $instance->setTestMode(is_null($test_mode) ? $this->getTestMode() : (bool)$test_mode);
@@ -180,7 +195,8 @@ class Gateway extends AbstractGateway
     /**
      * @return Client
      */
-    public function getClient() {
+    public function getClient()
+    {
         $client = new Client($this->getUsername(), $this->getPassword());
         $client->setTestMode($this->getTestMode());
         return $client;
@@ -190,7 +206,8 @@ class Gateway extends AbstractGateway
      * @param $parcel_id
      * @return string
      */
-    public function trackingUrl($parcel_id) {
+    public function trackingUrl($parcel_id)
+    {
         return sprintf(static::TRACKING_URL, $parcel_id);
     }
 
@@ -201,6 +218,7 @@ class Gateway extends AbstractGateway
     {
         return true;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -208,6 +226,7 @@ class Gateway extends AbstractGateway
     {
         return true;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -215,6 +234,7 @@ class Gateway extends AbstractGateway
     {
         return true;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -222,6 +242,7 @@ class Gateway extends AbstractGateway
     {
         return true;
     }
+
     /**
      * {@inheritdoc}
      */
