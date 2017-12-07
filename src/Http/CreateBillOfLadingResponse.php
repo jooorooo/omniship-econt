@@ -31,7 +31,7 @@ class CreateBillOfLadingResponse extends AbstractResponse
         $price = $this->data->getLoadingPrice();
         
         $result->setServiceId(strtolower($this->getRequest()->getServiceId()));
-        $result->setBolId($this->data->getLoadingNum());
+        $result->setBolId((string)$this->data->getLoadingNum());
         $result->setBillOfLadingType($result::PDF);
         $result->setBillOfLadingUrl($this->data->getPdfUrl());
         $result->setEstimatedDeliveryDate(Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->getRequest()->getReceiverTimeZone()));
