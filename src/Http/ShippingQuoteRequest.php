@@ -157,6 +157,21 @@ class ShippingQuoteRequest extends AbstractRequest
             $row['services']['p'] = array('type' => '', 'value' => '');
         }
 
+        if(!empty($cod_account_number = $this->getOtherParameters('cod_account_number'))) {
+            $row['services']['cd_agreement_num'] = $cod_account_number;
+        }
+
+//        if(!empty($cd_pay_options_email = $this->getOtherParameters('cd_pay_options_email'))) {
+//            $row['services']['cd_pay_options']['email'] = $cd_pay_options_email;
+//            //@todo make this
+//            $row['services']['cd_pay_options']['money_transfer'] = 1;
+//            $row['services']['cd_pay_options']['name'] = 'Georgi Nachev';
+//            $row['services']['cd_pay_options']['email'] = 'jooorooo@gmail.com';
+//            $row['services']['cd_pay_options']['city'] = 'София';
+//            $row['services']['cd_pay_options']['post_code'] = '1618';
+//            $row['services']['cd_pay_options']['street'] = 'ул. Тодор Каблешков 55';
+//        }
+
         $data['loadings']['row'] = $row;
 
         return $data;
