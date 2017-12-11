@@ -76,7 +76,7 @@ class ShippingQuoteRequest extends AbstractRequest
         $instructions = $this->getOtherParameters('instructions');
         if($instructions) {
             $total_instructions = count($row['instructions']);
-            foreach($instructions AS $row => $instruction) {
+            foreach($instructions AS $instruction) {
                 $row['instructions'][$total_instructions++]['e'] = $instruction;
             }
         }
