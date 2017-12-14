@@ -157,10 +157,6 @@ class ShippingQuoteRequest extends AbstractRequest
             $row['services']['p'] = array('type' => '', 'value' => '');
         }
 
-        if(!empty($cod_account_number = $this->getOtherParameters('cod_account_number'))) {
-            $row['services']['cd_agreement_num'] = $cod_account_number;
-        }
-
 //        if(!empty($cd_pay_options_email = $this->getOtherParameters('cd_pay_options_email'))) {
 //            $row['services']['cd_pay_options']['email'] = $cd_pay_options_email;
 //            //@todo make this
