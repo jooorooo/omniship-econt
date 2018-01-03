@@ -106,8 +106,11 @@ class ShippingQuoteRequest extends AbstractRequest
          * или някоя датите върнати от запитване „информация кои са дните за разнос по дадена дата”. По
          * подразбиране се взема първата възможна дата за доставка.
          */
-
         $row['shipment']['delivery_day'] = '';
+
+        if (!is_null($taking_date = $this->getShipmentDate())) {
+            $row['shipment']['send_date'] = $taking_date->format('Y-m-d');
+        }
 
         //@todo CASH, CREDIT, BONUS (бонус точки), VOUCHE (ваучери)
         $row['payment']['method'] = $this->getPaymentMethod() ? : Consts::PAYMENT_CASH; // CASH, CREDIT, BONUS (бонус точки), VOUCHER (ваучери)

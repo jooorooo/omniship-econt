@@ -344,7 +344,7 @@ class Client
     }
 
     /**
-     * Get deliveri days
+     * Get delivery days
      * @return Carbon[]|Collection
      */
     public function getDeliveryDays()
@@ -566,7 +566,7 @@ class Client
         if (!$body = $httpRequest->getBody()->getContents()) {
             return !($this->error = 'Return empty response');
         }
-
+        
         //@todo econt api fix (<b>Warning</b>:  Invalid argument supplied for foreach() in <b>/www/e-econt/include/classes/DBLoadings.class.php</b> on line <b>982</b><br />)
         if (strpos($body, '<?xml ') > 0) {
             $parts = explode('<?xml ', $body, 2);
