@@ -31,13 +31,15 @@ class CodPaymentsResponse extends AbstractResponse
             return $result;
         }
 
-        foreach($this->data AS $bol_id => $data) {
-            $result->put($bol_id, [
-                'id' => $bol_id,
-                'date' => $data->getCdSendTime() ? Carbon::createFromFormat('Y-m-d H:i:s', $data->getCdSendTime(), 'Europe/Sofia') : null,
-                'price' => $data->getCdSendSum(),
-                'error' => $data->getError() ? : null
-            ]);
+        if(is_array($this->data)) {
+            foreach ($this->data AS $bol_id => $data) {
+                $result->put($bol_id, [
+                    'id' => $bol_id,
+                    'date' => $data->getCdSendTime() ? Carbon::createFromFormat('Y-m-d H:i:s', $data->getCdSendTime(), 'Europe/Sofia') : null,
+                    'price' => $data->getCdSendSum(),
+                    'error' => $data->getError() ?: null
+                ]);
+            }
         }
 
         return $result;
