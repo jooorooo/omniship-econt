@@ -28,7 +28,7 @@ class ShippingQuoteResponse extends AbstractResponse
     public function getData()
     {
         $result = new ShippingQuoteBag();
-        if(!is_null($this->getCode())) {
+        if(!is_null($this->getCode()) || empty($this->data)) {
             return $result;
         }
 
