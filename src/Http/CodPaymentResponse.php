@@ -25,7 +25,7 @@ class CodPaymentResponse extends AbstractResponse
      */
     public function getData()
     {
-        if(!is_null($this->getCode()) || is_null($this->data->getCdSendTime())) {
+        if(!is_null($this->getCode()) || empty($this->data) || is_null($this->data->getCdSendTime())) {
             return null;
         }
 
