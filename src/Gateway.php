@@ -25,7 +25,7 @@ class Gateway extends AbstractGateway
 
     private $name = 'Econt';
 
-    const TRACKING_URL = 'http://www.econt.com/tracking/?num=%s';
+    const TRACKING_URL = 'https://www.econt.com/services/track-shipment/%s';
 
     /**
      * @return string
