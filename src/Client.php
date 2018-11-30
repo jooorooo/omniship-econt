@@ -50,6 +50,8 @@ class Client
 
     protected $client_info;
 
+    protected $connection_options;
+
     const SERVICE_TESTING_URL = 'http://demo.econt.com/e-econt/xml_service_tool.php';
     const SERVICE_PRODUCTION_URL = 'http://www.econt.com/e-econt/xml_service_tool.php';
 
@@ -58,10 +60,11 @@ class Client
 
     const MEDIATOR = 'CLOUDCART';
 
-    public function __construct($username, $password)
+    public function __construct($username, $password, array $connection_options = null)
     {
         $this->username = $username;
         $this->password = $password;
+        $this->connection_options = $connection_options;
     }
 
     /**
@@ -545,9 +548,16 @@ class Client
             return false;
         }
 
+        $connection_timeout = 60;
+        $read_timeout = null;
+        if($this->connection_options) {
+            extract($this->connection_options);
+        }
+
         try {
             $client = new HttpClient([
-                'timeout'         => 60,
+                'connect_timeout' => $connection_timeout, // Connection timeout
+                'timeout'         => $read_timeout, // Response timeout
             ]);
 
             $httpRequest = $client->post($url, array(

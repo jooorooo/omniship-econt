@@ -59,7 +59,7 @@ abstract class AbstractRequest extends BaseAbstractRequest
     public function getClient()
     {
         if(is_null($this->client)) {
-            $this->client = new EcontClient($this->getUsername(), $this->getPassword());
+            $this->client = new EcontClient($this->getUsername(), $this->getPassword(), $this->getConnectionOptions());
             $this->client->setTestMode($this->getTestMode());
         }
         return $this->client;
