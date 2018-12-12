@@ -15,6 +15,9 @@ use Omniship\Econt\Helper\Convert;
 
 class ShippingQuoteRequest extends AbstractRequest
 {
+
+    const BG_ISO = 'BG';
+
     /**
      * @return array
      */
@@ -135,7 +138,7 @@ class ShippingQuoteRequest extends AbstractRequest
         if ($cd = $this->getCashOnDeliveryAmount()) {
             $row['services']['cd'] = array('type' => 'GET', 'value' => $cd);
             $row['services']['cd_currency'] = $this->getCashOnDeliveryCurrency();
-            $row['services']['cd_agreement_num'] = $this->getCodAccount() ?: '';
+            $row['services']['cd_agreement_num'] = $this->getCodAccountNumber();
         } else {
             $row['services']['cd'] = array('type' => '', 'value' => '');
             $row['services']['cd_currency'] = '';
@@ -260,6 +263,24 @@ class ShippingQuoteRequest extends AbstractRequest
             return $in;
         }
         return 'IN';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCodAccountNumber()
+    {
+        $sender_address = $this->getSenderAddress();
+        if(!$sender_address->getCountry() || $sender_address->getCountry()->getIso2() != static::BG_ISO) {
+            return '';
+        }
+
+        $receiver_address = $this->getReceiverAddress();
+        if(!$receiver_address->getCountry() || $receiver_address->getCountry()->getIso2() != static::BG_ISO) {
+            return '';
+        }
+
+        return $this->getCodAccount() ?: '';
     }
 
 }
