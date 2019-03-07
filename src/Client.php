@@ -137,11 +137,7 @@ class Client
             return false;
         }
 
-        $info = $this->getClientInfo();
-        if(!$info || !$info->getId()) {
-            return false;
-        }
-        return true;
+        return !!$this->getCountries();
     }
 
     /**
@@ -525,11 +521,7 @@ class Client
     {
         $instance = new static($username, $password);
         $instance->setTestMode($this->getTestMode());
-        $result = $instance->getClientInfo();
-        if (!$result) {
-            $this->error = $instance->getError();
-        }
-        return (bool)$result;
+        return (bool)$instance->validateConnection();
     }
 
     /**
