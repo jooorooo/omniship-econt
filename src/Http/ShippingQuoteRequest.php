@@ -61,7 +61,6 @@ class ShippingQuoteRequest extends AbstractRequest
         }
 
         $row['receiver']['email'] = $this->getReceiverEmail();
-        $row['receiver']['sms_no'] = $this->getOtherParameters('sms_no');
 
         $row['shipment']['envelope_num'] = $this->getPackageId();
         $row['shipment']['description'] = '<![CDATA[' . $this->getContent() . ']]>';
@@ -137,6 +136,8 @@ class ShippingQuoteRequest extends AbstractRequest
 
         $row['services']['dc'] = $this->getBackReceipt() ? 'On' : ''; //обратна разписка;
         $row['services']['dc_cp'] = $this->getBackDocuments() ? 'On' : ''; // стокова разписка;
+
+        $row['services']['sms_notification'] = $this->getOtherParameters('sms_notification') ? 'On' : '';
 
         if($oc = $this->getInsuranceAmount()) {
             $row['services']['oc'] = $oc;
