@@ -137,7 +137,7 @@ class Client
             return false;
         }
 
-        return !!$this->getCountries();
+        return $this->getClientInfo()->getId() && !$this->getError();
     }
 
     /**
