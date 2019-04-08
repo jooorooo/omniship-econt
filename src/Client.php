@@ -137,7 +137,7 @@ class Client
             return false;
         }
 
-        return $this->getClientInfo()->getId() && !$this->getError();
+        return $this->getClientInfo() && $this->getClientInfo()->getId() && !$this->getError();
     }
 
     /**
