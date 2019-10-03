@@ -94,16 +94,17 @@ class ShippingQuoteRequest extends AbstractRequest
             }
         }
 
-        $size_under_60cm = 0;
-        if(($items = $this->getItems()) && $items->count() > 0) {
-            foreach($items->all() AS $item) {
-                if($item->getWidth() <= 60 || $item->getDepth() <= 60 || $item->getHeight() <= 60) {
-                    $size_under_60cm = 1;
-                }
-            }
-        }
-
-        $row['shipment']['size_under_60cm'] = $size_under_60cm;
+//        After call econt we remove POST_PACK service
+//        $size_under_60cm = 0;
+//        if(($items = $this->getItems()) && $items->count() > 0) {
+//            foreach($items->all() AS $item) {
+//                if($item->getWidth() <= 60 || $item->getDepth() <= 60 || $item->getHeight() <= 60) {
+//                    $size_under_60cm = 1;
+//                }
+//            }
+//        }
+//
+//        $row['shipment']['size_under_60cm'] = $size_under_60cm;
         $row['shipment']['tariff_sub_code'] = $from . '_' . $to;
         $this->setServiceId($row['shipment']['tariff_sub_code']);
         $tariff_code = 0;
@@ -117,9 +118,9 @@ class ShippingQuoteRequest extends AbstractRequest
         if ($row['shipment']['weight'] >= 50) {
             $row['shipment']['shipment_type'] = 'CARGO';
             $row['shipment']['cargo_code'] = 81;
-        } elseif ($row['shipment']['weight'] <= 20 && $row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE' && $size_under_60cm) {
+        } /*elseif ($row['shipment']['weight'] <= 20 && $row['shipment']['tariff_sub_code'] == 'OFFICE_OFFICE' && $size_under_60cm) {
             $row['shipment']['shipment_type'] = 'POST_PACK';
-        } else {
+        }*/ else {
             $row['shipment']['shipment_type'] = 'PACK';
         }
 
