@@ -161,7 +161,7 @@ class ShippingQuoteRequest extends AbstractRequest
         if ($cd = $this->getCashOnDeliveryAmount()) {
             $row['services']['cd'] = array('type' => 'GET', 'value' => $cd);
             $row['services']['cd_currency'] = $this->getCashOnDeliveryCurrency();
-            $row['services']['cd_agreement_num'] = $this->getCodAccountNumber();
+            $row['services']['cd_agreement_num'] = $this->getCodAccount(); //$тхис->getCodAccountNumber();
         } else {
             $row['services']['cd'] = array('type' => '', 'value' => '');
             $row['services']['cd_currency'] = '';
