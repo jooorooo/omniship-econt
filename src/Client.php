@@ -137,7 +137,13 @@ class Client
             return false;
         }
 
-        return $this->getClientInfo() && $this->getClientInfo()->getId() && !$this->getError();
+        $post = $this->post($this->getServiceEndpoint(), $this->_getRequestData('profile'));
+        if(!empty($post->error)) {
+            $this->error = (string)$post->error->message;
+            return false;
+        }
+
+        return isset($post->client_info) && isset($post->addresses);
     }
 
     /**
