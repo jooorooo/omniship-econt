@@ -32,7 +32,9 @@ class CreateBillOfLadingRequest extends ShippingQuoteRequest
      */
     protected function createResponse($data)
     {
-        return $this->response = new CreateBillOfLadingResponse($this, $data);
+        $this->response = new CreateBillOfLadingResponse($this, $data);
+        $this->response->setClient($this->getClient());
+        return $this->response;
     }
 
 }

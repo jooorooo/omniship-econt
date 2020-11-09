@@ -50,6 +50,9 @@ class Client
 
     protected $client_info;
 
+    protected $last_request;
+    protected $last_response;
+
     protected $connection_options;
 
     const SERVICE_TESTING_URL = 'http://demo.econt.com/e-econt/xml_service_tool.php';
@@ -552,6 +555,8 @@ class Client
             extract($this->connection_options);
         }
 
+        $this->last_request = $document;
+
         try {
             $client = new HttpClient([
                 'connect_timeout' => $connection_timeout, // Connection timeout
@@ -592,6 +597,16 @@ class Client
         }
 
         return $xml;
+    }
+
+    public function getLastRequest()
+    {
+        return $this->last_request;
+    }
+
+    public function getLastResponse()
+    {
+        return $this->last_response;
     }
 
     /**

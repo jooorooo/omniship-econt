@@ -43,5 +43,29 @@ class CreateBillOfLadingResponse extends AbstractResponse
 
         return $result;
     }
+    /**
+     * Get the formatted Request.
+     *
+     * @return null|string
+     */
+    public function getRequestFormatted()
+    {
+        if($client = $this->getClient()) {
+            return $client->getLastRequest();
+        }
+
+        return null;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function getResponseFormatted()
+    {
+        if($client = $this->getClient()) {
+            return $client->getLastResponse();
+        }
+
+        return null;
+    }
 
 }
