@@ -18,6 +18,8 @@ class AbstractResponse extends BaseAbstractResponse
 
     protected $errorCode;
 
+    protected $client;
+
     /**
      * @return null|string
      */
@@ -46,6 +48,24 @@ class AbstractResponse extends BaseAbstractResponse
             return $this->errorCode;
         }
         return null;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param mixed $client
+     * @return AbstractResponse
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+        return $this;
     }
 
 }
