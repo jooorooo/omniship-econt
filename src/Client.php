@@ -586,6 +586,8 @@ class Client
             $body = '<?xml ' . end($parts);
         }
 
+        $this->last_response = $body;
+
         if (!$this->isXMLContentValid($body)) {
             return !($this->error = 'Return invalid XML response');
         }

@@ -8,6 +8,7 @@
 
 namespace Omniship\Econt\Http;
 
+use Omniship\Econt\Client;
 use Omniship\Econt\Lib\Interfaces\ErrorResponseInterface;
 use Omniship\Message\AbstractResponse AS BaseAbstractResponse;
 
@@ -51,7 +52,7 @@ class AbstractResponse extends BaseAbstractResponse
     }
 
     /**
-     * @return mixed
+     * @return null|Client
      */
     public function getClient()
     {
