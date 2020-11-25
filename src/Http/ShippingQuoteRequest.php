@@ -10,6 +10,7 @@ namespace Omniship\Econt\Http;
 
 use Carbon\Carbon;
 use Omniship\Common\Address;
+use Omniship\Common\Item;
 use Omniship\Consts;
 use Omniship\Econt\Helper\Convert;
 
@@ -186,6 +187,21 @@ class ShippingQuoteRequest extends AbstractRequest
             $row['services']['p'] = array('type' => '', 'value' => '');
         }
 
+        //add опис по пратката
+        $items = $this->getItems();
+        if(!$items->isEmpty()) {
+            $row['packing_list']['type'] = 'DIGITAL';
+            /** @var Item $item */
+            foreach($items as $item) {
+                $row['packing_list']['row'][]['e'] = array(
+                    'inventory_num' => $item->getId(),
+                    'description'   => $item->getName(),
+                    'weight'        => $item->getWeight(),
+                    'price'         => $item->getPrice(),
+                    'count'         => $item->getQuantity()
+                );
+            }
+        }
 //        if(!empty($cd_pay_options_email = $this->getOtherParameters('cd_pay_options_email'))) {
 //            $row['services']['cd_pay_options']['email'] = $cd_pay_options_email;
 //            //@todo make this
