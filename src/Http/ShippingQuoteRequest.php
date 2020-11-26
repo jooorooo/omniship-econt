@@ -189,7 +189,9 @@ class ShippingQuoteRequest extends AbstractRequest
 
         if($this->getOtherParameters('packing_list')) {
             //add опис по пратката
-            $items = $this->getItems();
+            $items = $this->getItems()->filter(function($item) {
+                return $item->getPrice() > 0;
+            });
             if (!$items->isEmpty()) {
                 $row['packing_list']['type'] = 'DIGITAL';
                 /** @var Item $item */
