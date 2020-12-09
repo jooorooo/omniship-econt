@@ -198,7 +198,7 @@ class ShippingQuoteRequest extends AbstractRequest
                 foreach ($items as $item) {
                     $row['packing_list']['row'][]['e'] = array(
                         'inventory_num' => $item->getId(),
-                        'description' => $item->getName(),
+                        'description' => '<![CDATA[' . $item->getName() . ']]>',
                         'weight' => $item->getWeight(),
                         'price' => $item->getPrice(),
                         'count' => $item->getQuantity()
