@@ -234,7 +234,9 @@ class ShippingQuoteRequest extends AbstractRequest
      */
     protected function createResponse($data)
     {
-        return $this->response = new ShippingQuoteResponse($this, $data);
+        $this->response = new ShippingQuoteResponse($this, $data);
+        $this->response->setClient($this->getClient());
+        return $this->response;
     }
 
     /**
