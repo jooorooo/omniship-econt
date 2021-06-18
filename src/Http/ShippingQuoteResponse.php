@@ -31,6 +31,11 @@ class ShippingQuoteResponse extends AbstractResponse
         if(!is_null($this->getCode()) || empty($this->data)) {
             return $result;
         }
+		
+		$delivery_date = null;
+		if(preg_match('/^([\d]{4})-([\d]{2})-([\d]{2})$/', $this->data->getDeliveryDate())) {
+			$delivery_date = Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->request->getReceiverTimeZone());
+		}
 
         $result->push([
             'id' => strtolower($this->getRequest()->getServiceId()),
@@ -39,7 +44,7 @@ class ShippingQuoteResponse extends AbstractResponse
             'price' => $this->data->getLoadingPrice()->getTotal(),
             'pickup_date' => Carbon::now($this->request->getSenderTimeZone()),
             'pickup_time' => Carbon::now($this->request->getSenderTimeZone()),
-            'delivery_date' => Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->request->getReceiverTimeZone()),
+            'delivery_date' => $delivery_date,
             'delivery_time' => null,
             'currency' => $this->data->getLoadingPrice()->getCurrencyCode(),
             'tax' => 0,
