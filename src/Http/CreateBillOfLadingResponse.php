@@ -29,12 +29,17 @@ class CreateBillOfLadingResponse extends AbstractResponse
             return $result;
         }
         $price = $this->data->getLoadingPrice();
+		
+		$delivery_date = null;
+		if(preg_match('/^([\d]{4})-([\d]{2})-([\d]{2})$/', $this->data->getDeliveryDate())) {
+			$delivery_date = Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->request->getReceiverTimeZone());
+		}
         
         $result->setServiceId(strtolower($this->getRequest()->getServiceId()));
         $result->setBolId((string)$this->data->getLoadingNum());
         $result->setBillOfLadingType($result::PDF);
         $result->setBillOfLadingUrl($this->data->getPdfUrl());
-        $result->setEstimatedDeliveryDate(Carbon::createFromFormat('Y-m-d', $this->data->getDeliveryDate(), $this->getRequest()->getReceiverTimeZone()));
+        $result->setEstimatedDeliveryDate($delivery_date);
         $result->setPickupDate($this->getRequest()->getShipmentDate());
         $result->setTotal($price->getTotal());
         $result->setInsurance($price->getOC());
